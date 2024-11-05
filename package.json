@@ -5,7 +5,8 @@
   "type": "module",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "dev": "node ."
+    "dev": "nodemon --env-file=.env.",
+    "start": "node ."
   },
   "keywords": [],
   "author": "",
