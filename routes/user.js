@@ -15,7 +15,7 @@ userRouter.post('/users/login', loginUser);
 // Route to get the logged-in user's profile (must be authenticated)
 userRouter.get('/users/me', isAuthenticated, getProfile);
 
-userRouter.get('/users/me/adverts', isAuthenticated, getUserProducts);
+userRouter.get('/users/me/products', isAuthenticated, getUserProducts);
 
 // Route to update the user's profile (must be authenticated)
 userRouter.patch('/users/me', isAuthenticated, hasPermission('update_profile'), userProfileImageUpload.single('avatar'), updateProfile);
