@@ -53,7 +53,7 @@ export const getProducts = async (req, res, next) => {
             .skip(Number(skip));    
 
         // Respond with the list of adverts
-        res.status(200).json(adverts);
+        res.status(200).json(products);
     } catch (error) {
         next(error); // Pass any error to the error handler middleware
     }
