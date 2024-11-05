@@ -5,7 +5,7 @@ export const permissions = [
         actions: [
             'get_profile',
             'update_profile',
-            'view_adverts',        
+            'view_product',        
             'contact_vendor'       
         ]
     },
@@ -14,11 +14,11 @@ export const permissions = [
         actions: [
             'get_profile',
             'update_profile',
-            'add_advert',           
-            'update_advert',        
-            'delete_advert',        
-            'view_adverts',         
-            'manage_own_adverts'    
+            'add_product',           
+            'update_product',        
+            'delete_product',        
+            'view_productss',         
+            'manage_own_products'    
         ]
     }
 ]
