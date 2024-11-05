@@ -13,7 +13,7 @@ userRouter.post('/users/register', registerUser);
 userRouter.post('/users/login', loginUser);
 
 // Route to get the logged-in user's profile (must be authenticated)
-userRouter.get('/users/me', isAuthenticated, getProfile);
+userRouter.get('/users/profile', isAuthenticated, getProfile);
 
 userRouter.get('/users/me/products', isAuthenticated, getUserProducts);
 
