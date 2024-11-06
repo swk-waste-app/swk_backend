@@ -5,7 +5,7 @@ export const permissions = [
         actions: [
             'get_profile',
             'update_profile',
-            'view_product',        
+            'view_products',        
             'contact_vendor'       
         ]
     },
@@ -15,8 +15,8 @@ export const permissions = [
             'get_profile',
             'update_profile',
             'add_products',           
-            'update_product',        
-            'delete_product',        
+            'update_products',        
+            'delete_products',        
             'view_products',         
             'manage_own_products'    
         ]

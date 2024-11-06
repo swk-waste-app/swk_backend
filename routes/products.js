@@ -6,7 +6,7 @@ import { productImageUpload } from '../middlewares/uploads.js';
 const productRouter = Router();
 
 productRouter.get('/products/count', countProducts)
-productRouter.post('/products', isAuthenticated, hasPermission('add_product'), productImageUpload.single('image'), addProduct);
+productRouter.post('/products', isAuthenticated, hasPermission('add_products'), productImageUpload.single('image'), addProduct);
 productRouter.get('/products', getProducts);
 productRouter.get('/products/:id', getProduct)
 productRouter.patch('/products/:id', isAuthenticated, hasPermission('update_product'), productImageUpload.single('image'), updateProduct);

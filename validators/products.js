@@ -10,10 +10,10 @@ export const addProductValidator = Joi.object({
 });
 
 export const updateProductValidator = Joi.object({
-    title: Joi.string().optional(),
-    description: Joi.string().optional(),
-    price: Joi.number().positive().optional(),
-    category: Joi.string().optional(),
-    inventory: Joi.number().integer().min(0).optional(),
-    image: Joi.string().optional(),
+    title: Joi.string(),
+    description: Joi.string(),
+    price: Joi.number(),
+    category: Joi.string(),
+    inventory: Joi.number(),
+    image: Joi.string(),
 });
