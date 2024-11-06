@@ -4,11 +4,11 @@ import { toJSON } from '@reis/mongoose-to-json';
 const productSchema = new Schema({
     title: { type: String, required: true },
     description: { type: String },
-    price: { type: Number, required: true },
-    category: { type: String, required: true },
+    price: { type: String },
+    category: { type: String },
     inventory: { type: Number, default: 0 },
     image: { type: String },
-    vendor: { type: Schema.Types.ObjectId, ref: 'User', required: true }
+    // user: { type: Schema.Types.ObjectId, ref: 'User', required: true }
 }, {
     timestamps: true,
 });
