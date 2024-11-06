@@ -13,12 +13,12 @@ userRouter.post('/users/register', registerUser);
 userRouter.post('/users/login', loginUser);
 
 // Route to get the logged-in user's profile (must be authenticated)
-userRouter.get('/users/me/profile', isAuthenticated, getProfile);
+userRouter.get('/users/profile', isAuthenticated, getProfile);
 
-userRouter.get('/users/me/products', isAuthenticated, getUserProducts);
+userRouter.get('/users/products', isAuthenticated, getUserProducts);
 
 // Route to update the user's profile (must be authenticated)
-userRouter.patch('/users/me', isAuthenticated, hasPermission('update_profile'), userProfileImageUpload.single('avatar'), updateProfile);
+userRouter.patch('/users/profile', isAuthenticated, hasPermission('update_profile'), userProfileImageUpload.single('avatar'), updateProfile);
 
 // Export router
 export default userRouter;
