@@ -14,10 +14,10 @@ export const permissions = [
         actions: [
             'get_profile',
             'update_profile',
-            'add_product',           
+            'add_products',           
             'update_product',        
             'delete_product',        
-            'view_productss',         
+            'view_products',         
             'manage_own_products'    
         ]
     }
