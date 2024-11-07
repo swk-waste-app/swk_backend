@@ -4,7 +4,7 @@ import { toJSON } from '@reis/mongoose-to-json';
 const productSchema = new Schema({
     title: { type: String, required: true },
     description: { type: String },
-    price: { type: String },
+    price: { type: Number },
     category: { type: String },
     inventory: { type: Number, default: 0 },
     image: { type: String },
