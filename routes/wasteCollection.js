@@ -1,11 +1,11 @@
-// import { Router } from 'express';
-// import { schedulePickup, getPickupHistory, updatePickupStatus } from '../controllers/wasteCollection.js';
-// import { verifyToken } from '../middlewares/auth.js'; // Corrected path
+import { Router } from 'express';
+import { schedulePickup, getPickupHistory, updatePickupStatus } from '../controllers/wasteCollection.js';
+import { verifyToken } from '../middlewares/auth.js'; // Corrected path
 
-// const router = Router();
+const wasteCollectionRouter = Router();
 
-// router.post('/schedule', verifyToken, schedulePickup);
-// router.get('/history', verifyToken, getPickupHistory);
-// router.patch('/:id/status', verifyToken, updatePickupStatus);
+wasteCollectionRouter.post('/schedule', verifyToken, schedulePickup);
+wasteCollectionRouter.get('/history', verifyToken, getPickupHistory);
+wasteCollectionRouter.patch('/:id/status', verifyToken, updatePickupStatus);
 
-// export default router; // Correct export
+export default wasteCollectionRouter; // Correct export
