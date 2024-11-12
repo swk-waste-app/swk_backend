@@ -10,27 +10,38 @@ export const registerUser = async (req, res, next) => {
     try {
         const { error, value } = registerUserValidator.validate(req.body);
         if (error) {
-            return res.status(422).json(error);
+            return res.status(422).json({ message: error.details[0].message });
         }
         const user = await UserModel.findOne({ email: value.email });
         if (user) {
             return res.status(409).json('User already exists!');
         }
+        // Set the role to "vendor"
         const hashedPassword = bcrypt.hashSync(value.password, 10);
-        await UserModel.create({
+        const newUser = await UserModel.create({
             ...value,
-            password: hashedPassword
+            password: hashedPassword,
+            role: 'vendor' // Add this line to assign the "vendor" role
         });
+
+        // Send a registration email
         await mailTransporter.sendMail({
             to: value.email,
             subject: 'User Registration',
             text: `Hello! ${value.name}, Your account has been registered successfully`
         });
-        res.json("User registered!");
+
+        // Respond with success and the redirect URL
+        res.json({
+            message: "User registered!",
+            redirectUrl: '/vendor/dashboard' // Add this line for frontend redirection
+        });
     } catch (error) {
         next(error);
     }
 };
+
+
 
 // Login user
 export const loginUser = async (req, res, next) => {

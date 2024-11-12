@@ -9,4 +9,4 @@ const wasteCollectionSchema = new Schema({
     timestamps: true,
 });
 
-export const WasteCollectionModel = model('WasteCollection', wasteCollectionSchema);
+export const wasteCollectionModel = model('WasteCollection', wasteCollectionSchema);
