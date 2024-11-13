@@ -2,40 +2,25 @@ import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 import { UserModel } from '../models/user.js';
 import { registerUserValidator, loginUserValidator, updateProfileValidator } from '../validators/user.js';
-import { mailTransporter } from '../utils/mail.js';
 import { ProductModel } from '../models/products.js';
 
 
 export const registerUser = async (req, res, next) => {
     try {
         const { error, value } = registerUserValidator.validate(req.body);
-        if (error) {
-            return res.status(422).json({ message: error.details[0].message });
-        }
-        const user = await UserModel.findOne({ email: value.email });
-        if (user) {
-            return res.status(409).json('User already exists!');
-        }
-        // Set the role to "vendor"
-        const hashedPassword = bcrypt.hashSync(value.password, 10);
-        const newUser = await UserModel.create({
-            ...value,
-            password: hashedPassword,
-            role: 'vendor' // Add this line to assign the "vendor" role
-        });
+        if (error) return res.status(422).json({ message: error.details[0].message });
 
-        // Send a registration email
-        await mailTransporter.sendMail({
-            to: value.email,
-            subject: 'User Registration',
-            text: `Hello! ${value.name}, Your account has been registered successfully`
-        });
+        const existingUser = await UserModel.findOne({ email: value.email });
+        if (existingUser) return res.status(409).json({ message: 'User already exists' });
 
-        // Respond with success and the redirect URL
-        res.json({
-            message: "User registered!",
-            redirectUrl: '/vendor/dashboard' // Add this line for frontend redirection
-        });
+        // Check if the role is 'vendor', otherwise default to 'user'
+        value.role = value.role === 'vendor' ? 'vendor' : 'user';
+
+        // Hash the password and create the user
+        value.password = bcrypt.hashSync(value.password, 10);
+        await UserModel.create(value);
+
+        res.status(201).json({ message: 'User registered successfully!', role: value.role });
     } catch (error) {
         next(error);
     }
