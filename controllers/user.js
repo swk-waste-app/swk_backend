@@ -13,14 +13,12 @@ export const registerUser = async (req, res, next) => {
         const existingUser = await UserModel.findOne({ email: value.email });
         if (existingUser) return res.status(409).json({ message: 'User already exists' });
 
-        // Check if the role is 'vendor', otherwise default to 'user'
-        value.role = value.role === 'vendor' ? 'vendor' : 'user';
-
+      
         // Hash the password and create the user
         value.password = bcrypt.hashSync(value.password, 10);
         await UserModel.create(value);
 
-        res.status(201).json({ message: 'User registered successfully!', role: value.role });
+        res.status(201).json({ message: 'User registered successfully!' });
     } catch (error) {
         next(error);
     }
@@ -49,7 +47,8 @@ export const loginUser = async (req, res, next) => {
         );
         res.json({
             message: 'User logged in!',
-            accessToken: token
+            accessToken: token,
+            role: user.role
         });
     } catch (error) {
         next(error);
