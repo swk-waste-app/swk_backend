@@ -28,7 +28,6 @@ export const registerUser = async (req, res, next) => {
 
 
 
-// Login user
 export const loginUser = async (req, res, next) => {
     try {
         const { error, value } = loginUserValidator.validate(req.body);
@@ -57,7 +56,7 @@ export const loginUser = async (req, res, next) => {
     }
 };
 
-// Get user profile
+
 export const getProfile = async (req, res, next) => {
     try {
         const user = await UserModel
