@@ -45,20 +45,24 @@ export const verifyToken = (req, res, next) => {
 
     const token = authHeader.split(' ')[1]; // The token should be in the format "Bearer <token>"
     
-    if (!token) {
-        return res.status(403).json({ message: 'Access denied. Invalid token format.' });
-    }
+    console.log("Token received:", token); // Debugging line
 
-    try {
-        // Verify the token using the secret key from the .env file
-        const decoded = jwt.verify(token, process.env.JWT_SECRET);
+
+    // if (!token) {
+    //     return res.status(403).json({ message: 'Access denied. Invalid token format.' });
+    // }
+
+    // try {
+    //     // Verify the token using the secret key from the .env file
+    //     const decoded = jwt.verify(token, process.env.JWT_SECRET);
         
-        // Attach the decoded user information to the request object
-        req.user = decoded;
+    //     // Attach the decoded user information to the request object
+    //     req.user = decoded;
         
-        // Proceed to the next middleware or route handler
-        next();
-    } catch (error) {
-        res.status(401).json({ message: 'Invalid or expired token.' });
-    }
+    //     // Proceed to the next middleware or route handler
+    //     next();
+    // } catch (error) {
+    //     res.status(401).json({ message: 'Invalid or expired token.' });
+    // }
 };
+
