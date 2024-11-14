@@ -1,6 +1,6 @@
 import { Router } from 'express';
 import { schedulePickup, getPickupHistory, updatePickupStatus } from '../controllers/wasteCollection.js';
-import { isAuthenticated, verifyToken } from '../middlewares/auth.js'; 
+import { isAuthenticated } from '../middlewares/auth.js'; 
 
 const wasteCollectionRouter = Router();
 
