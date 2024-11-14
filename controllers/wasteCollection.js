@@ -7,7 +7,7 @@ export const schedulePickup = async (req, res, next) => {
         const { error, value } = schedulePickupValidator.validate(req.body);
         if (error) return res.status(422).json(error.details[0].message);
 
-        await wasteCollectionModel.create({ ...value, user: req.user.id });
+        await wasteCollectionModel.create({ ...value, user: req.auth.id });
         res.status(201).json({ message: 'Pickup scheduled successfully' });
     } catch (error) {
         next(error);
