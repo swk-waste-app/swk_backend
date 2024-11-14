@@ -16,7 +16,7 @@ export const schedulePickup = async (req, res, next) => {
 
 export const getPickupHistory = async (req, res, next) => {
     try {
-        const pickups = await wasteCollectionModel.find({ user: req.user.id });
+        const pickups = await wasteCollectionModel.find({ user: req.auth.id });
         res.json(pickups);
     } catch (error) {
         next(error);
