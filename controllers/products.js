@@ -61,7 +61,7 @@ export const getProducts = async (req, res, next) => {
 
 export const countProducts = async (req, res, next) => {
     try {
-        const { } = req.body;
+        const { filter = "{} "} = req.body;
         //count adverts in database
         const count = await ProductModel.countDocuments(JSON.parse(filter));
         //Respond to request
