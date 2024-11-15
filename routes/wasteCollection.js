@@ -6,6 +6,7 @@ const wasteCollectionRouter = Router();
 
 wasteCollectionRouter.post('/schedule', isAuthenticated, schedulePickup);
 wasteCollectionRouter.get('/history', isAuthenticated, getPickupHistory);
+
 wasteCollectionRouter.patch('/:id/status', isAuthenticated, updatePickupStatus);
 
 export default wasteCollectionRouter; 

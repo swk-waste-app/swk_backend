@@ -26,7 +26,7 @@ export const addProduct = async (req, res, next) => {
 export const getProducts = async (req, res, next) => {
     try {
         // Extract query params
-        const { title, category, minPrice, maxPrice, limit = 10, skip = 0, sort = "{}" } = req.query;
+        const { title, category, minPrice, maxPrice, limit = 100, skip = 0, sort = "{}" } = req.query;
         let filter = {}; 
 
       

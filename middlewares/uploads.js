@@ -15,7 +15,7 @@ export const productImageUpload = multer({
 export const userProfileImageUpload = multer({
     storage: multerSaveFilesOrg({
         apiAccessToken: process.env.SAVEFILESORG_API_KEY,
-        relativePath: '/swk-waste-app/users/*' // Path for storing user profile images
+        relativePath: '/swk-waste-app/users/*' // P
     }),
     preservePath: true
 });
