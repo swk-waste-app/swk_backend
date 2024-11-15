@@ -76,8 +76,8 @@ export const getProduct = async (req, res, next) => {
     try {
         const { id } = req.params;
         //Get advert by id from database
-        const advert = await ProductModel.findById(id);
-        res.json(product);
+        const product = await ProductModel.findById(id);
+        res.status(201).json(product)
     } catch (error) {
         next(error);
 
