@@ -14,6 +14,18 @@ export const schedulePickup = async (req, res, next) => {
     }
 };
 
+export const getSchedule = async (req, res, next) => {
+    try {
+        const { id } = req.params;
+        //Get schedule by id from database
+        const schedule = await wasteModel.findById(id);
+        res.json(schedule);
+    } catch (error) {
+        next(error);
+
+    }
+}
+
 export const getPickupHistory = async (req, res, next) => {
     try {
         const pickups = await wasteCollectionModel.find({ user: req.auth.id });
