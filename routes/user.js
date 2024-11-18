@@ -12,7 +12,8 @@ userRouter.post('/users/register', registerUser);
 userRouter.post('/users/login', loginUser);
 
 userRouter.get('/users/profile', isAuthenticated, hasPermission('get_profile'), getProfile);
-userRouter.get('/profiles', isAuthenticated, hasPermission('get_aal_profile'), getAllProfiles);
+
+userRouter.get('/profiles', isAuthenticated, hasPermission('get_profiles'), getAllProfiles);
 
 userRouter.get('/users/products', isAuthenticated, hasPermission('view_products'), getUserProducts);
 
