@@ -25,7 +25,7 @@ app.use(userRouter);
 app.use(wasteCollectionRouter)
 app.use('/api/news', newsRouter);
 app.use('/api/scholar', googleScholarRouter);
-app.use('/api/message', messageRouter)
+app.use( messageRouter)
 
 //listen for incoming requests
 app.listen(6060, () => {

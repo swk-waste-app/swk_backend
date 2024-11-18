@@ -67,7 +67,7 @@ export const getProfile = async (req, res, next) => {
     }
 };
 
-// Update user profile
+
 export const updateProfile = async (req, res, next) => {
     try {
         const { error, value } = updateProfileValidator.validate({
