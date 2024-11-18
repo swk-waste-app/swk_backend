@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { registerUser, loginUser, getProfile, updateProfile, getUserProducts } from '../controllers/user.js';
+import { registerUser, loginUser, getProfile, getAllProfiles, updateProfile, getUserProducts } from '../controllers/user.js';
 import { userProfileImageUpload } from '../middlewares/uploads.js';
 import { isAuthenticated, hasPermission } from '../middlewares/auth.js';
 
@@ -12,6 +12,7 @@ userRouter.post('/users/register', registerUser);
 userRouter.post('/users/login', loginUser);
 
 userRouter.get('/users/profile', isAuthenticated, hasPermission('get_profile'), getProfile);
+userRouter.get('/profiles', isAuthenticated, hasPermission('get_aal_profile'), getAllProfiles);
 
 userRouter.get('/users/products', isAuthenticated, hasPermission('view_products'), getUserProducts);
 
