@@ -7,7 +7,7 @@ export const registerUserValidator = Joi.object({
     password: Joi.string().min(6).required(), 
     contactNumber: Joi.number(),
     businessName: Joi.string(),
-    role: Joi.string().valid('user', 'vendor', 'admin').optional
+    role: Joi.string().valid('user', 'vendor', 'admin').required()
 });
 
 // Validator for user login
