@@ -13,7 +13,7 @@ userRouter.post('/users/login', loginUser);
 
 userRouter.get('/users/profile', isAuthenticated, hasPermission('get_profile'), getProfile);
 
-userRouter.get('/profiles', isAuthenticated, hasPermission('get_profiles'), getAllProfiles);
+userRouter.get('/users/profiles', isAuthenticated, hasPermission('get_all_profiles'), getAllProfiles);
 
 userRouter.get('/users/products', isAuthenticated, hasPermission('view_products'), getUserProducts);
 
