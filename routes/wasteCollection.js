@@ -5,8 +5,8 @@ import { isAuthenticated } from '../middlewares/auth.js';
 const wasteCollectionRouter = Router();
 
 wasteCollectionRouter.post('/schedule', isAuthenticated, schedulePickup);
-wasteCollectionRouter.get('/history', getPickupHistory);
-wasteCollectionRouter.get('/schedule/:id', getSchedule);
+wasteCollectionRouter.get('/history', isAuthenticated, getPickupHistory);
+wasteCollectionRouter.get('/schedule/:id', isAuthenticated, getSchedule);
 wasteCollectionRouter.patch('/:id/status', isAuthenticated, updatePickupStatus);
 wasteCollectionRouter.get('/schedules/count', countSchedules)
 
