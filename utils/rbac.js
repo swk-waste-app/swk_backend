@@ -34,7 +34,7 @@ export const permissions = [
             'manage_all_products',    
             'manage_users',           
             'view_all_pickups',
-            'view_pickup_history' ,      
+            'view_history' ,      
             'update_pickup_status',         
             'receive_messages'        
         ]
