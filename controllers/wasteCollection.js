@@ -41,8 +41,12 @@ export const getSchedule = async (req, res, next) => {
 
 export const getPickupHistory = async (req, res, next) => {
     try {
-        const pickups = await wasteCollectionModel.find({ user: req.auth.id });
-        res.json(pickups);
+        const {filter = "{}", sort = "{}", limit = 100, skip = 0} = req.query;
+        const pickups = await wasteCollectionModel.find(JSON.parse(filter))
+        .sort(JSON.parse(sort))
+        .limit(limit)
+        .skip(skip)
+       return res.status(200).json(pickups);
     } catch (error) {
         next(error);
     }
