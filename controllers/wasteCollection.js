@@ -60,3 +60,12 @@ export const updatePickupStatus = async (req, res, next) => {
         next(error);
     }
 };
+
+export const deleteSchedule = async (req, res, next) => {
+    try {
+        await wasteCollectionModel.findByIdAndDelete(req.params.id, { status: req.body.status });
+        res.json({ message: 'schedule deleted successfully' });
+    } catch (error) {
+        next(error);
+    }
+};

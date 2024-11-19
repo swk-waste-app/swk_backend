@@ -5,7 +5,7 @@ import { sendEmail } from '../utils/sendEmail.js';
 export const sendMessageToAdmin = async (req, res, next) => {
     try {
         const { subject, message } = req.body;
-       const {email}=await UserModel.findById(req.auth.id)
+        const { email } = await UserModel.findById(req.auth.id)
         // Save the message to the database
         const newMessage = await MessageModel.create({
             user: req.auth.id,
