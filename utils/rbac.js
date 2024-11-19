@@ -8,8 +8,7 @@ export const permissions = [
             'view_products',
             'contact_vendor',
             'schedule_pickup',       
-            'view_pickup_history',  
-            'access_education',      
+            'view_pickup_history',       
             'send_message_to_admin' 
         ]
     },
@@ -24,8 +23,7 @@ export const permissions = [
             'view_products',
             'manage_own_products',
             'manage_waste_pickups', 
-            'view_pickup_history',  
-            'access_education',    
+            'view_pickup_history',      
             'send_message_to_admin' 
         ]
     },
@@ -35,9 +33,9 @@ export const permissions = [
             'get_all_profiles',       
             'manage_all_products',    
             'manage_users',           
-            'view_all_pickups',       
-            'update_pickup_status',   
-            'manage_education',       
+            'view_all_pickups',
+            'view_pickup_history' ,      
+            'update_pickup_status',         
             'receive_messages'        
         ]
     }
