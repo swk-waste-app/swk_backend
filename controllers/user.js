@@ -13,7 +13,7 @@ export const registerUser = async (req, res, next) => {
         const existingUser = await UserModel.findOne({ email: value.email });
         if (existingUser) return res.status(409).json({ message: 'User already exists' });
 
-      
+
         // Hash the password and create the user
         value.password = bcrypt.hashSync(value.password, 10);
         await UserModel.create(value);
@@ -57,12 +57,11 @@ export const loginUser = async (req, res, next) => {
 
 export const getAllProfiles = async (req, res, next) => {
     try {
-        const {filter = "{}"} = req.query
-        const users = await UserModel.find({ ...JSON.parse(filter),
-            user: req.auth.id }).select('-password'); 
+        const { filter = "{}" } = req.query
+        const users = await UserModel.find({ ...JSON.parse(filter) }).select('-password');
         res.json(users);
     } catch (error) {
-        next(error); 
+        next(error);
     }
 };
 

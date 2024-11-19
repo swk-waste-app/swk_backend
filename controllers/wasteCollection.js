@@ -63,9 +63,13 @@ export const updatePickupStatus = async (req, res, next) => {
 
 export const deleteSchedule = async (req, res, next) => {
     try {
-        await wasteCollectionModel.findByIdAndDelete(req.params.id, { status: req.body.status });
-        res.json({ message: 'schedule deleted successfully' });
+        const deletedSchedule = await wasteCollectionModel.findByIdAndDelete(req.params.id);
+        if (!deletedSchedule) {
+            return res.status(404).json({ message: 'Schedule not found' });
+        }
+        res.json({ message: 'Schedule deleted successfully' });
     } catch (error) {
         next(error);
     }
 };
+

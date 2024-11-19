@@ -9,7 +9,8 @@ export const permissions = [
             'contact_vendor',
             'schedule_pickup',       
             'view_pickup_history',       
-            'send_message_to_admin' 
+            'send_message_to_admin',
+            'delete_schedule' 
         ]
     },
     {
@@ -36,7 +37,8 @@ export const permissions = [
             'view_all_pickups',
             'get_history' ,      
             'update_pickup_status',         
-            'receive_messages'        
+            'receive_messages', 
+            'delete_schedule'       
         ]
     }
 ];

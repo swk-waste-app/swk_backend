@@ -10,6 +10,6 @@ wasteCollectionRouter.get('/history', isAuthenticated, hasPermission('get_histor
 wasteCollectionRouter.get('/schedule/:id', isAuthenticated, hasPermission('get_schedule'), getSchedule);
 wasteCollectionRouter.patch('/:id/status', isAuthenticated, hasPermission('update_pickup'), updatePickupStatus);
 wasteCollectionRouter.get('/schedules/count', countSchedules)
-wasteCollectionRouter.delete('/delete', isAuthenticated, hasPermission('delete_schedule'), deleteSchedule)
+wasteCollectionRouter.delete('/schedules/delete', isAuthenticated, hasPermission('delete_schedule'), deleteSchedule)
 
 export default wasteCollectionRouter; 
