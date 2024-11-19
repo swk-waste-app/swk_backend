@@ -57,8 +57,9 @@ export const loginUser = async (req, res, next) => {
 
 export const getAllProfiles = async (req, res, next) => {
     try {
+        const {filter = "{}"} = req.query
         // Fetch all users from the database, excluding their passwords
-        const users = await UserModel.find({ ...filter,
+        const users = await UserModel.find({ ...JSON.parse(filter),
             user: req.user.id }).select('-password'); // '-password' excludes the password field
         res.json(users);
     } catch (error) {
