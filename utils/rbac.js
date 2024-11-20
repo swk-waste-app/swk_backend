@@ -1,4 +1,4 @@
-// rbac.js - Role-Based Access Control for Advertisement App
+// rbac.js - Role-Based Access Control for SWK Waste App
 export const permissions = [
     {
         role: 'user',
@@ -7,8 +7,9 @@ export const permissions = [
             'update_profile',
             'view_products',
             'contact_vendor',
-            'schedule_pickup',       
-            'view_pickup_history',       
+            'schedule_pickup',
+            'update_pickup',      
+            'get_history',       
             'send_message_to_admin',
             'delete_schedule' 
         ]
@@ -19,12 +20,12 @@ export const permissions = [
             'get_profile',
             'update_profile',
             'add_products',
-            'update_products',
+            'update_product',
             'delete_products',
             'view_products',
             'manage_own_products',
             'manage_waste_pickups', 
-            'view_pickup_history',      
+            'get_history',      
             'send_message_to_admin' 
         ]
     },

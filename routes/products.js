@@ -10,6 +10,6 @@ productRouter.post('/products', isAuthenticated, hasPermission('add_products'), 
 productRouter.get('/products', getProducts);
 productRouter.get('/products/:id', getProduct)
 productRouter.patch('/products/:id', isAuthenticated, hasPermission('update_product'), productImageUpload.single('image'), updateProduct);
-productRouter.delete('/products/:id', isAuthenticated, hasPermission('delete_Product'), deleteProduct);
+productRouter.delete('/products/:id', isAuthenticated, hasPermission('delete_product'), deleteProduct);
 
 export default productRouter;

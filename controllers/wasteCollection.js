@@ -1,5 +1,5 @@
 import { wasteCollectionModel} from "../models/wasteCollection.js";
-import { schedulePickupValidator } from "../validators/wasteCollection.js";
+import { schedulePickupValidator, updatePickupValidator } from "../validators/wasteCollection.js";
 
 
 export const schedulePickup = async (req, res, next) => {
@@ -52,6 +52,24 @@ export const getPickupHistory = async (req, res, next) => {
     }
 };
 
+export const updatePickup = async (req, res, next) => {
+    try {
+        const { error, value } = updatePickupValidator.validate({
+            ...req.body,
+            image: req.file?.filename
+        });
+        if (error) {
+            return res.status(422).json(error);
+        }
+        // Update the pickup schedule
+        const advert = await wasteCollectionModel.findByIdAndUpdate(req.params.id, value);
+        // Respond with success message
+        res.json('Schedule updated');
+    } catch (error) {
+        next(error);
+    }
+};
+
 export const updatePickupStatus = async (req, res, next) => {
     try {
         await wasteCollectionModel.findByIdAndUpdate(req.params.id, { status: req.body.status });
@@ -70,6 +88,6 @@ export const deleteSchedule = async (req, res, next) => {
         res.json({ message: 'Schedule deleted successfully' });
     } catch (error) {
         next(error);
-    }
+    } 
 };
 

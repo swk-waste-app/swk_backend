@@ -93,8 +93,8 @@ export const updateProduct = async (req, res, next) => {
         if (error) {
             return res.status(422).json(error);
         }
-        // Update the advert
-        const advert = await ProductModel.findByIdAndUpdate(req.params.id, value);
+        
+        const product = await ProductModel.findByIdAndUpdate(req.params.id, value);
         // Respond with success message
         res.json('Product updated');
     } catch (error) {
