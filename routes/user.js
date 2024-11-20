@@ -11,7 +11,7 @@ userRouter.post('/users/register', registerUser);
 
 userRouter.post('/users/login', loginUser);
 
-userRouter.get('/users/profile', isAuthenticated, hasPermission('get_profile'), getProfile);
+userRouter.get('profiles/:id', isAuthenticated, hasPermission('get_profile'), getProfile);
 
 userRouter.get('/users/profiles', isAuthenticated, hasPermission('get_all_profiles'), getAllProfiles);
 
