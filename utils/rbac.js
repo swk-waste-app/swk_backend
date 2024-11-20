@@ -39,7 +39,14 @@ export const permissions = [
             'get_history' ,      
             'update_pickup_status',         
             'receive_messages', 
-            'delete_schedule'       
+            'delete_schedule',
+            'update_product',
+            'delete_products',
+            'get_profile',
+            'update_profile',
+            'add_products',
+            'view_products'
+           
         ]
     }
 ];
