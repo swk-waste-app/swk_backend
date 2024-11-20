@@ -95,7 +95,6 @@ export const updateProduct = async (req, res, next) => {
         }
         
         const product = await ProductModel.findByIdAndUpdate(req.params.id, value);
-        // Respond with success message
         res.json('Product updated');
     } catch (error) {
         next(error);

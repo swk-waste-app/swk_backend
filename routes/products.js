@@ -9,7 +9,7 @@ productRouter.get('/products/count', countProducts)
 productRouter.post('/products', isAuthenticated, hasPermission('add_products'), productImageUpload.single('image'), addProduct);
 productRouter.get('/products', getProducts);
 productRouter.get('/products/:id', getProduct)
-productRouter.patch('/products/:id', isAuthenticated, hasPermission('update_product'), productImageUpload.single('image'), updateProduct);
-productRouter.delete('/products/:id', isAuthenticated, hasPermission('delete_product'), deleteProduct);
+productRouter.patch('/products/:id', isAuthenticated, hasPermission('update_products'), productImageUpload.single('image'), updateProduct);
+productRouter.delete('/products/:id', isAuthenticated, hasPermission('delete_products'), deleteProduct);
 
 export default productRouter;
