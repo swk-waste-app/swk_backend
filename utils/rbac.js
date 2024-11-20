@@ -4,6 +4,7 @@ export const permissions = [
         role: 'user',
         actions: [
             'get_profile',
+            'get_schedule',
             'update_profile',
             'view_product',
             'view_products',
