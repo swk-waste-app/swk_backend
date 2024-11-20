@@ -5,6 +5,7 @@ export const permissions = [
         actions: [
             'get_profile',
             'update_profile',
+            'view_product',
             'view_products',
             'contact_vendor',
             'schedule_pickup',
@@ -20,12 +21,14 @@ export const permissions = [
             'get_profile',
             'update_profile',
             'add_products',
+            'view_product',
+            'view_products',
             'update_product',
             'delete_product',
-            'view_products',
             'manage_own_products',
             'manage_waste_pickups', 
-            'get_history',      
+            'get_history',  
+
             'send_message_to_admin' 
         ]
     },
@@ -45,6 +48,7 @@ export const permissions = [
             'get_profile',
             'update_profile',
             'add_products',
+            'view_product',
             'view_products'
            
         ]
