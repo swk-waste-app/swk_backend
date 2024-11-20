@@ -47,6 +47,7 @@ export const permissions = [
             'delete_schedule',
             'update_product',
             'delete_product',
+            'delete_products',
             'get_profile',
             'update_profile',
             'add_products',
