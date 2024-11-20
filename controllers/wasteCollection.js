@@ -56,7 +56,7 @@ export const updatePickup = async (req, res, next) => {
     try {
         const { error, value } = updatePickupValidator.validate({
             ...req.body,
-            image: req.file?.filename
+            // image: req.file?.filename
         });
         if (error) {
             return res.status(422).json(error);
