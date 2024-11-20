@@ -52,7 +52,8 @@ export const permissions = [
             'update_profile',
             'add_products',
             'view_product',
-            'view_products'
+            'view_products',
+            'get_profile'
            
         ]
     }
