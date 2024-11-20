@@ -26,6 +26,7 @@ export const permissions = [
             'view_products',
             'update_product',
             'delete_product',
+            'delete_products',
             'manage_own_products',
             'manage_waste_pickups', 
             'get_history',  
