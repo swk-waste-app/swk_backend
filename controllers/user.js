@@ -55,6 +55,7 @@ export const loginUser = async (req, res, next) => {
     }
 };
 
+
 export const getAllProfiles = async (req, res, next) => {
     try {
         const { filter = "{}" } = req.query
@@ -97,7 +98,7 @@ export const updateProfile = async (req, res, next) => {
 export const getUserProducts = async (req, res, next) => {
     try {
         // Extract query params
-        const { title, category, minPrice, maxPrice, limit = 10, skip = 0, sort = "{}" } = req.query;
+        const { title, category, minPrice, maxPrice, limit = 100, skip = 0, sort = "{}" } = req.query;
         let filter = {};
 
         // If title query param exists, perform a case-insensitive search on the title field

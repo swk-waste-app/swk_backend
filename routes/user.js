@@ -17,6 +17,8 @@ userRouter.get('/users/profiles', isAuthenticated, hasPermission('get_all_profil
 
 userRouter.get('/users/products', isAuthenticated, hasPermission('view_products'), getUserProducts);
 
+userRouter.get('/users/products', isAuthenticated, hasPermission, getUserProducts);
+
 userRouter.patch('/users/profile', isAuthenticated, hasPermission('update_profile'), userProfileImageUpload.single('avatar'), updateProfile);
 
 export default userRouter;
