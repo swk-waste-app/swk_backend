@@ -3,6 +3,7 @@ import jwt from 'jsonwebtoken';
 import { UserModel } from '../models/user.js';
 import { registerUserValidator, loginUserValidator, updateProfileValidator } from '../validators/user.js';
 import { ProductModel } from '../models/products.js';
+import { wasteCollectionModel } from '../models/wasteCollection.js';
 
 
 export const registerUser = async (req, res, next) => {
@@ -134,3 +135,23 @@ export const getUserProducts = async (req, res, next) => {
         next(error);
     }
 };
+
+
+export const getUserSchedules = async (req, res, next) => {
+    try {
+        const {filter = '{}', sort = '{}', limit = 100, skip = 0} = req.query
+        const schedules = await wasteCollectionModel
+        .find({
+            ...JSON.parse(filter),
+            user: req.auth.id
+        })
+        .sort(JSON.parse(sort))
+        .limit(limit)
+        .skip(skip);
+
+        res.json(schedules);
+    }catch (error) {
+        next(error);
+    }
+
+    }
