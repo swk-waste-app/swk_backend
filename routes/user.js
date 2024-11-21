@@ -17,7 +17,7 @@ userRouter.get('/users/profiles', isAuthenticated, hasPermission('get_all_profil
 
 userRouter.get('/users/products', isAuthenticated, hasPermission('view_products'), getUserProducts);
 
-userRouter.get('/users/me/products', isAuthenticated, hasPermission, getUserProducts);
+userRouter.get('/users/me/products', isAuthenticated, hasPermission ('get_users_products'), getUserProducts);
 
 userRouter.get('/users/me/schedules', isAuthenticated, hasPermission('get_users_schedules'), getUserSchedules)
 
