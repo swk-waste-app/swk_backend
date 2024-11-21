@@ -13,7 +13,8 @@ export const permissions = [
             'update_pickup',      
             'get_history',       
             'send_message_to_admin',
-            'delete_schedule' 
+            'delete_schedule',
+            'get_users_schedules' 
         ]
     },
     {

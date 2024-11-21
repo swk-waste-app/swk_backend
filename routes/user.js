@@ -19,7 +19,7 @@ userRouter.get('/users/products', isAuthenticated, hasPermission('view_products'
 
 userRouter.get('/users/me/products', isAuthenticated, hasPermission, getUserProducts);
 
-userRouter.get('/users/me/schedules', isAuthenticated, hasPermission, getUserSchedules)
+userRouter.get('/users/me/schedules', isAuthenticated, hasPermission('get_users_schedules'), getUserSchedules)
 
 userRouter.patch('/users/profile', isAuthenticated, hasPermission('update_profile'), userProfileImageUpload.single('avatar'), updateProfile);
 
