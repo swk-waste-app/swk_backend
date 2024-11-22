@@ -98,43 +98,23 @@ export const updateProfile = async (req, res, next) => {
 
 export const getUserProducts = async (req, res, next) => {
     try {
-        // Extract query params
-        const { title, category, minPrice, maxPrice, limit = 100, skip = 0, sort = "{}" } = req.query;
-        let filter = {};
+        const {filter = '{}', sort = '{}', limit = 100, skip = 0} = req.query
+        const productss = await ProductModel
+        .find({
+            ...JSON.parse(filter),
+            user: req.auth.id
+        })
+        .sort(JSON.parse(sort))
+        .limit(limit)
+        .skip(skip);
 
-        // If title query param exists, perform a case-insensitive search on the title field
-        if (title) {
-            filter.title = { $regex: title, $options: 'i' }; // 'i' for case-insensitive
-        }
-
-        // If category query param exists, add it to the filter
-        if (category) {
-            filter.category = category;
-        }
-
-        // If minPrice or maxPrice query params exist, filter by price range
-        if (minPrice || maxPrice) {
-            filter.price = {};
-            if (minPrice) filter.price.$gte = minPrice;
-            if (maxPrice) filter.price.$lte = maxPrice;
-        }
-
-        // Fetch products from the database based on filter, with pagination and sorting
-        const products = await ProductModel
-            .find({
-                ...filter,
-                vendor: req.auth.id,
-            })
-            .sort(JSON.parse(sort)) // Sort by the provided sort query
-            .limit(Number(limit))   // Limit number of results
-            .skip(Number(skip));    // Skip the first n results for pagination
-
-        // Respond with the list of products
-        res.status(200).json(products);
-    } catch (error) {
+        res.json(products);
+    }catch (error) {
         next(error);
     }
-};
+
+    }
+
 
 
 export const getUserSchedules = async (req, res, next) => {
