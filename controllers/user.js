@@ -99,7 +99,7 @@ export const updateProfile = async (req, res, next) => {
 export const getUserProducts = async (req, res, next) => {
     try {
         const {filter = '{}', sort = '{}', limit = 100, skip = 0} = req.query
-        const productss = await ProductModel
+        const products = await ProductModel
         .find({
             ...JSON.parse(filter),
             user: req.auth.id
