@@ -102,7 +102,7 @@ export const getUserProducts = async (req, res, next) => {
         const products = await ProductModel
         .find({
             ...JSON.parse(filter),
-            vendor: req.auth.id
+            user: req.auth.id
         })
         .sort(JSON.parse(sort))
         .limit(limit)

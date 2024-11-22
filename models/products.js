@@ -8,7 +8,7 @@ const productSchema = new Schema({
     category: { type: String },
     inventory: { type: Number, default: 0 },
     image: { type: String },
-    // user: { type: Schema.Types.ObjectId, ref: 'User', required: true }
+    user: { type: Schema.Types.ObjectId, ref: 'User', required: true }
 }, {
     timestamps: true,
 });
