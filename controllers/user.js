@@ -123,7 +123,7 @@ export const getUserProducts = async (req, res, next) => {
         const products = await ProductModel
             .find({
                 ...filter,
-                user: req.auth.id,
+                vendor: req.auth.id,
             })
             .sort(JSON.parse(sort)) // Sort by the provided sort query
             .limit(Number(limit))   // Limit number of results
