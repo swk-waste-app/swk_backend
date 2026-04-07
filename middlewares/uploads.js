@@ -1,30 +1,30 @@
-// upload.js
 import multer from 'multer';
-import { multerSaveFilesOrg } from 'multer-savefilesorg';
+import { v2 as cloudinary } from 'cloudinary';
+import { CloudinaryStorage } from 'multer-storage-cloudinary';
 
-// Middleware for uploading product images
+cloudinary.config({
+    cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+    api_key: process.env.CLOUDINARY_API_KEY,
+    api_secret: process.env.CLOUDINARY_API_SECRET
+});
+
 export const productImageUpload = multer({
-    storage: multerSaveFilesOrg({
-        apiAccessToken: process.env.SAVEFILESORG_API_KEY,
-        relativePath: '/swk-waste-app/products/*' // Path for storing product images
-    }),
-    preservePath: true
+    storage: new CloudinaryStorage({
+        cloudinary,
+        params: { folder: 'swk-waste-app/products', allowed_formats: ['jpg', 'png', 'jpeg', 'webp'] }
+    })
 });
 
-// Middleware for uploading user profile images
 export const userProfileImageUpload = multer({
-    storage: multerSaveFilesOrg({
-        apiAccessToken: process.env.SAVEFILESORG_API_KEY,
-        relativePath: '/swk-waste-app/users/*' // P
-    }),
-    preservePath: true
+    storage: new CloudinaryStorage({
+        cloudinary,
+        params: { folder: 'swk-waste-app/users', allowed_formats: ['jpg', 'png', 'jpeg', 'webp'] }
+    })
 });
 
-// Middleware for uploading educational content images
 export const educationImageUpload = multer({
-    storage: multerSaveFilesOrg({
-        apiAccessToken: process.env.SAVEFILESORG_API_KEY,
-        relativePath: '/swk-waste-app/education/*' // Path for storing educational content images
-    }),
-    preservePath: true
+    storage: new CloudinaryStorage({
+        cloudinary,
+        params: { folder: 'swk-waste-app/education', allowed_formats: ['jpg', 'png', 'jpeg', 'webp'] }
+    })
 });
