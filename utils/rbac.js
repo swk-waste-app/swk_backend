@@ -1,4 +1,3 @@
-// rbac.js - Role-Based Access Control for SWK Waste App
 export const permissions = [
     {
         role: 'user',
@@ -14,7 +13,10 @@ export const permissions = [
             'get_history',
             'send_message_to_admin',
             'delete_schedule',
-            'get_users_schedules'
+            'get_users_schedules',
+            'get_users_stats',
+            'rate_pickup',
+            'view_leaderboard',
         ]
     },
     {
@@ -32,7 +34,12 @@ export const permissions = [
             'manage_waste_pickups',
             'get_history',
             'get_users_products',
-            'send_message_to_admin'
+            'send_message_to_admin',
+            'get_users_stats',
+            'view_leaderboard',
+            'get_users_schedules',
+            'schedule_pickup',
+            'delete_schedule',
         ]
     },
     {
@@ -53,8 +60,14 @@ export const permissions = [
             'update_profile',
             'add_products',
             'view_product',
-            'view_products'
-
+            'view_products',
+            'get_users_stats',
+            'view_leaderboard',
+            'get_users_schedules',
+            'get_users_products',
+            'assign_agent',
+            'manage_agents',
+            'view_platform_stats',
         ]
     }
 ];
