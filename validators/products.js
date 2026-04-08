@@ -1,5 +1,10 @@
 import Joi from 'joi';
 
+const WASTE_TYPES = ['General Waste', 'Recyclable Materials', 'Organic/Food Waste',
+    'Electronic (E-Waste)', 'Hazardous Waste', 'Fashion & Textiles',
+    'Plastics', 'Metals & Scrap', 'Glass', 'Wood & Furniture',
+    'Paper & Cardboard', 'Rubber', 'Other'];
+
 export const addProductValidator = Joi.object({
     title: Joi.string().required(),
     description: Joi.string(),
@@ -8,10 +13,17 @@ export const addProductValidator = Joi.object({
     inventory: Joi.number(),
     image: Joi.string(),
     condition: Joi.string().valid('New', 'Like New', 'Good', 'Fair').default('Good'),
-    wasteType: Joi.string().valid('Bottles', 'Papers', 'Organic Fertilizer', 'Fashion & Textiles', 
-               'Electronics', 'Metals', 'Plastics', 'Glass', 'Wood', 'Other'),
+    wasteType: Joi.string().valid(...WASTE_TYPES),
     location: Joi.string(),
     tags: Joi.array().items(Joi.string()),
+    beforeImage: Joi.string(),
+    afterImage: Joi.string(),
+    upcyclingStory: Joi.string(),
+    materialsUsed: Joi.array().items(Joi.string()),
+    wasteSourced: Joi.string(),
+    processDescription: Joi.string(),
+    timeToMake: Joi.string(),
+    isUpcycled: Joi.boolean(),
 });
 
 export const updateProductValidator = Joi.object({
@@ -22,12 +34,19 @@ export const updateProductValidator = Joi.object({
     inventory: Joi.number(),
     image: Joi.string(),
     condition: Joi.string().valid('New', 'Like New', 'Good', 'Fair'),
-    wasteType: Joi.string().valid('Bottles', 'Papers', 'Organic Fertilizer', 'Fashion & Textiles', 
-               'Electronics', 'Metals', 'Plastics', 'Glass', 'Wood', 'Other'),
+    wasteType: Joi.string().valid(...WASTE_TYPES),
     location: Joi.string(),
     isAvailable: Joi.boolean(),
     tags: Joi.array().items(Joi.string()),
     rating: Joi.number().min(0).max(5),
     totalRatings: Joi.number(),
     sold: Joi.number(),
+    beforeImage: Joi.string(),
+    afterImage: Joi.string(),
+    upcyclingStory: Joi.string(),
+    materialsUsed: Joi.array().items(Joi.string()),
+    wasteSourced: Joi.string(),
+    processDescription: Joi.string(),
+    timeToMake: Joi.string(),
+    isUpcycled: Joi.boolean(),
 });
