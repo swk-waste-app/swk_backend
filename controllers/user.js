@@ -178,3 +178,16 @@ export const getUserStats = async (req, res, next) => {
         next(error);
     }
 };
+export const getLeaderboard = async (req, res, next) => {
+    try {
+        const leaderboard = await UserModel
+            .find({ role: 'user' })
+            .select('name points level badges wasteCollected carbonSaved')
+            .sort({ points: -1 })
+            .limit(10);
+
+        res.json(leaderboard);
+    } catch (error) {
+        next(error);
+    }
+};
