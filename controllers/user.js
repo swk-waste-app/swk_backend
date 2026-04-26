@@ -180,6 +180,29 @@ export const getUserStats = async (req, res, next) => {
         next(error);
     }
 };
+export const getPublicVendorProfile = async (req, res, next) => {
+    try {
+        const vendor = await UserModel.findById(req.params.id).select('name role location');
+        if (!vendor) return res.status(404).json({ message: 'Vendor not found' });
+        const userObjectId = new Types.ObjectId(req.params.id);
+        const totalProducts = await ProductModel.countDocuments({ user: userObjectId });
+        const soldStats = await ProductModel.aggregate([
+            { $match: { user: userObjectId } },
+            { $group: { _id: null, totalSold: { $sum: '$sold' } } }
+        ]);
+        res.json({
+            id: vendor.id,
+            name: vendor.name,
+            role: vendor.role,
+            location: vendor.location,
+            totalProducts,
+            totalSold: soldStats[0]?.totalSold || 0,
+        });
+    } catch (error) {
+        next(error);
+    }
+};
+
 export const getLeaderboard = async (req, res, next) => {
     try {
         const leaderboard = await UserModel

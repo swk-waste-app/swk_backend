@@ -25,62 +25,54 @@ export const addProduct = async (req, res, next) => {
 
 export const getProducts = async (req, res, next) => {
     try {
-        // Extract query params
-        const { title, category, minPrice, maxPrice, limit = 100, skip = 0, sort = "{}" } = req.query;
-        let filter = {}; 
+        const { title, category, minPrice, maxPrice, user, limit = 100, skip = 0, sort = "{}" } = req.query;
+        let filter = {};
 
-      
         if (title) {
-            filter.title = { $regex: title, $options: 'i' }; // 'i' for case-insensitive
+            filter.title = { $regex: title, $options: 'i' };
         }
-
-        
         if (category) {
             filter.category = category;
         }
-
+        if (user) {
+            filter.user = user;
+        }
         if (minPrice || maxPrice) {
             filter.price = {};
-            if (minPrice) filter.price.$gte = minPrice; 
-            if (maxPrice) filter.price.$lte = maxPrice; 
+            if (minPrice) filter.price.$gte = Number(minPrice);
+            if (maxPrice) filter.price.$lte = Number(maxPrice);
         }
 
-        // Fetch adverts from the database based on filter, with pagination and sorting
         const products = await ProductModel
             .find(filter)
-            .sort(JSON.parse(sort)) 
-            .limit(Number(limit))   
-            .skip(Number(skip));    
+            .populate('user', 'name')
+            .sort(JSON.parse(sort))
+            .limit(Number(limit))
+            .skip(Number(skip));
 
-        // Respond with the list of adverts
         res.status(200).json(products);
     } catch (error) {
-        next(error); // Pass any error to the error handler middleware
+        next(error);
     }
 };
 
 export const countProducts = async (req, res, next) => {
     try {
-        const { filter = "{} "} = req.body;
-        //count adverts in database
+        const { filter = '{}' } = req.query;
         const count = await ProductModel.countDocuments(JSON.parse(filter));
-        //Respond to request
-        res.json({ count })
+        res.json({ count });
     } catch (error) {
         next(error);
-
     }
 }
 
 export const getProduct = async (req, res, next) => {
     try {
         const { id } = req.params;
-        //Get advert by id from database
-        const product = await ProductModel.findById(id);
-        res.status(201).json(product)
+        const product = await ProductModel.findById(id).populate('user', 'name location');
+        res.status(200).json(product);
     } catch (error) {
         next(error);
-
     }
 }
 
@@ -94,7 +86,7 @@ export const updateProduct = async (req, res, next) => {
             return res.status(422).json(error);
         }
         
-        const product = await ProductModel.findByIdAndUpdate(req.params.id, value);
+        await ProductModel.findByIdAndUpdate(req.params.id, value);
         res.json('Product updated');
     } catch (error) {
         next(error);

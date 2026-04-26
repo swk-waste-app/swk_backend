@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { registerUser, loginUser, getProfile, getAllProfiles, updateProfile, getUserProducts, getUserSchedules, getUserStats, getLeaderboard } from '../controllers/user.js';
+import { registerUser, loginUser, getProfile, getAllProfiles, updateProfile, getUserProducts, getUserSchedules, getUserStats, getLeaderboard, getPublicVendorProfile } from '../controllers/user.js';
 import { userProfileImageUpload } from '../middlewares/uploads.js';
 import { isAuthenticated, hasPermission } from '../middlewares/auth.js';
 
@@ -15,5 +15,7 @@ userRouter.get('/me/schedules', isAuthenticated, hasPermission('get_users_schedu
 userRouter.get('/me/stats', isAuthenticated, getUserStats);
 userRouter.get('/leaderboard', isAuthenticated, getLeaderboard);
 userRouter.patch('/profile', isAuthenticated, hasPermission('update_profile'), userProfileImageUpload.single('avatar'), updateProfile);
+
+userRouter.get('/:id/public', getPublicVendorProfile);
 
 export default userRouter;

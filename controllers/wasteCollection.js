@@ -27,12 +27,10 @@ export const countSchedules = async (req, res, next) => {
 export const getSchedule = async (req, res, next) => {
     try {
         const { id } = req.params;
-        //Get schedule by id from database
         const schedule = await wasteCollectionModel.findById(id);
         res.json(schedule);
     } catch (error) {
         next(error);
-
     }
 }
 
@@ -51,16 +49,11 @@ export const getPickupHistory = async (req, res, next) => {
 
 export const updatePickup = async (req, res, next) => {
     try {
-        const { error, value } = updatePickupValidator.validate({
-            ...req.body,
-            // image: req.file?.filename
-        });
+        const { error, value } = updatePickupValidator.validate(req.body);
         if (error) {
             return res.status(422).json(error);
         }
-        // Update the pickup schedule
-        const advert = await wasteCollectionModel.findByIdAndUpdate(req.params.id, value);
-        // Respond with success message
+        await wasteCollectionModel.findByIdAndUpdate(req.params.id, value);
         res.json('Schedule updated');
     } catch (error) {
         next(error);
