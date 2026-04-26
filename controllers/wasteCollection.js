@@ -1,5 +1,17 @@
 import { wasteCollectionModel} from "../models/wasteCollection.js";
+import { UserModel } from "../models/user.js";
 import { schedulePickupValidator, updatePickupValidator } from "../validators/wasteCollection.js";
+
+const LEVELS = [
+    { name: 'Beginner', min: 0 },
+    { name: 'Recycler', min: 100 },
+    { name: 'Eco Warrior', min: 500 },
+    { name: 'Green Champion', min: 1000 },
+    { name: 'Earth Guardian', min: 5000 },
+];
+
+const getLevel = (points) =>
+    [...LEVELS].reverse().find(l => points >= l.min)?.name || 'Beginner';
 
 
 export const schedulePickup = async (req, res, next) => {
@@ -62,7 +74,53 @@ export const updatePickup = async (req, res, next) => {
 
 export const updatePickupStatus = async (req, res, next) => {
     try {
-        await wasteCollectionModel.findByIdAndUpdate(req.params.id, { status: req.body.status });
+        const { status } = req.body;
+        const pickup = await wasteCollectionModel.findById(req.params.id);
+        if (!pickup) return res.status(404).json({ message: 'Pickup not found' });
+
+        const update = { status };
+
+        if (status === 'Completed' && pickup.status !== 'Completed') {
+            const weightKg = pickup.actualWeight || pickup.estimatedWeight || 0;
+            const pointsEarned = Math.round(weightKg * 10);
+            const carbonSaved = parseFloat((weightKg * 0.21).toFixed(2));
+
+            update.pointsEarned = pointsEarned;
+            update.carbonSaved = carbonSaved;
+            update.completedAt = new Date();
+
+            const user = await UserModel.findByIdAndUpdate(
+                pickup.user,
+                {
+                    $inc: {
+                        points: pointsEarned,
+                        wasteCollected: weightKg,
+                        carbonSaved,
+                        completedPickups: 1,
+                        totalPickups: 1,
+                    }
+                },
+                { new: true }
+            );
+
+            const newBadges = [];
+            if (user.completedPickups === 1 && !user.badges.includes('first_pickup'))
+                newBadges.push('first_pickup');
+            if (user.completedPickups >= 5 && !user.badges.includes('five_pickups'))
+                newBadges.push('five_pickups');
+            if (user.completedPickups >= 10 && !user.badges.includes('ten_pickups'))
+                newBadges.push('ten_pickups');
+            if (user.carbonSaved >= 50 && !user.badges.includes('carbon_saver'))
+                newBadges.push('carbon_saver');
+
+            const newLevel = getLevel(user.points);
+            await UserModel.findByIdAndUpdate(pickup.user, {
+                level: newLevel,
+                ...(newBadges.length > 0 ? { $push: { badges: { $each: newBadges } } } : {})
+            });
+        }
+
+        await wasteCollectionModel.findByIdAndUpdate(req.params.id, update);
         res.json({ message: 'Pickup status updated' });
     } catch (error) {
         next(error);

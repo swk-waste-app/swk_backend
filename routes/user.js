@@ -1,12 +1,21 @@
 import { Router } from 'express';
+import rateLimit from 'express-rate-limit';
 import { registerUser, loginUser, getProfile, getAllProfiles, updateProfile, getUserProducts, getUserSchedules, getUserStats, getLeaderboard, getPublicVendorProfile } from '../controllers/user.js';
 import { userProfileImageUpload } from '../middlewares/uploads.js';
 import { isAuthenticated, hasPermission } from '../middlewares/auth.js';
 
 const userRouter = Router();
 
-userRouter.post('/register', registerUser);
-userRouter.post('/login', loginUser);
+const authLimiter = rateLimit({
+    windowMs: 15 * 60 * 1000,
+    max: 10,
+    message: { message: 'Too many attempts, please try again in 15 minutes.' },
+    standardHeaders: true,
+    legacyHeaders: false,
+});
+
+userRouter.post('/register', authLimiter, registerUser);
+userRouter.post('/login', authLimiter, loginUser);
 userRouter.get('/profile', isAuthenticated, hasPermission('get_profile'), getProfile);
 userRouter.get('/profiles', isAuthenticated, hasPermission('get_all_profiles'), getAllProfiles);
 userRouter.get('/products', isAuthenticated, hasPermission('view_products'), getUserProducts);
