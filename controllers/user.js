@@ -6,6 +6,29 @@ import { registerUserValidator, loginUserValidator, updateProfileValidator } fro
 import { ProductModel } from '../models/products.js';
 import { wasteCollectionModel } from '../models/wasteCollection.js';
 
+export const createAdmin = async (req, res, next) => {
+    try {
+        const secret = req.headers['x-admin-secret'];
+        if (!secret || secret !== process.env.ADMIN_SECRET) {
+            return res.status(403).json({ message: 'Forbidden' });
+        }
+        const { name, email, password } = req.body;
+        if (!name || !email || !password) {
+            return res.status(422).json({ message: 'name, email, and password are required' });
+        }
+        if (password.length < 6) {
+            return res.status(422).json({ message: 'Password must be at least 6 characters' });
+        }
+        const existing = await UserModel.findOne({ email });
+        if (existing) return res.status(409).json({ message: 'Email already in use' });
+        const hashed = bcrypt.hashSync(password, 10);
+        await UserModel.create({ name, email, password: hashed, role: 'admin' });
+        res.status(201).json({ message: 'Admin account created successfully' });
+    } catch (error) {
+        next(error);
+    }
+};
+
 export const registerUser = async (req, res, next) => {
     try {
         const { error, value } = registerUserValidator.validate(req.body);

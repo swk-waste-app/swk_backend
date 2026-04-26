@@ -1,6 +1,6 @@
 import { Router } from 'express';
 import rateLimit from 'express-rate-limit';
-import { registerUser, loginUser, getProfile, getAllProfiles, updateProfile, getUserProducts, getUserSchedules, getUserStats, getLeaderboard, getPublicVendorProfile } from '../controllers/user.js';
+import { createAdmin, registerUser, loginUser, getProfile, getAllProfiles, updateProfile, getUserProducts, getUserSchedules, getUserStats, getLeaderboard, getPublicVendorProfile } from '../controllers/user.js';
 import { userProfileImageUpload } from '../middlewares/uploads.js';
 import { isAuthenticated, hasPermission } from '../middlewares/auth.js';
 
@@ -14,6 +14,7 @@ const authLimiter = rateLimit({
     legacyHeaders: false,
 });
 
+userRouter.post('/admin', createAdmin);
 userRouter.post('/register', authLimiter, registerUser);
 userRouter.post('/login', authLimiter, loginUser);
 userRouter.get('/profile', isAuthenticated, hasPermission('get_profile'), getProfile);
