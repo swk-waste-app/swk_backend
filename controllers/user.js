@@ -1,5 +1,6 @@
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
+import { Types } from 'mongoose';
 import { UserModel } from '../models/user.js';
 import { registerUserValidator, loginUserValidator, updateProfileValidator } from '../validators/user.js';
 import { ProductModel } from '../models/products.js';
@@ -102,14 +103,15 @@ export const getUserSchedules = async (req, res, next) => {
 export const getUserStats = async (req, res, next) => {
     try {
         const userId = req.auth.id;
+        const userObjectId = new Types.ObjectId(userId);
         const user = await UserModel.findById(userId).select('-password');
-        const totalPickups = await wasteCollectionModel.countDocuments({ user: userId });
-        const completedPickups = await wasteCollectionModel.countDocuments({ user: userId, status: 'Completed' });
-        const scheduledPickups = await wasteCollectionModel.countDocuments({ user: userId, status: 'Scheduled' });
-        const inProgressPickups = await wasteCollectionModel.countDocuments({ user: userId, status: 'In Progress' });
-        const cancelledPickups = await wasteCollectionModel.countDocuments({ user: userId, status: 'Cancelled' });
+        const totalPickups = await wasteCollectionModel.countDocuments({ user: userObjectId });
+        const completedPickups = await wasteCollectionModel.countDocuments({ user: userObjectId, status: 'Completed' });
+        const scheduledPickups = await wasteCollectionModel.countDocuments({ user: userObjectId, status: 'Scheduled' });
+        const inProgressPickups = await wasteCollectionModel.countDocuments({ user: userObjectId, status: 'In Progress' });
+        const cancelledPickups = await wasteCollectionModel.countDocuments({ user: userObjectId, status: 'Cancelled' });
         const wasteStats = await wasteCollectionModel.aggregate([
-            { $match: { user: userId, status: 'Completed' } },
+            { $match: { user: userObjectId, status: 'Completed' } },
             {
                 $group: {
                     _id: null,
@@ -120,11 +122,11 @@ export const getUserStats = async (req, res, next) => {
             }
         ]);
         const recentPickups = await wasteCollectionModel
-            .find({ user: userId })
+            .find({ user: userObjectId })
             .sort({ createdAt: -1 })
             .limit(5);
         const monthlyPickups = await wasteCollectionModel.aggregate([
-            { $match: { user: userId } },
+            { $match: { user: userObjectId } },
             {
                 $group: {
                     _id: { month: { $month: '$createdAt' }, year: { $year: '$createdAt' } },
@@ -136,9 +138,9 @@ export const getUserStats = async (req, res, next) => {
         ]);
         let vendorStats = null;
         if (user.role === 'vendor') {
-            const totalProducts = await ProductModel.countDocuments({ user: userId });
+            const totalProducts = await ProductModel.countDocuments({ user: userObjectId });
             const productStats = await ProductModel.aggregate([
-                { $match: { user: userId } },
+                { $match: { user: userObjectId } },
                 {
                     $group: {
                         _id: null,

@@ -41,6 +41,13 @@ app.use('/api/scholar', googleScholarRouter);
 app.use('/api/messages', messageRouter);
 app.use('/api/auth', authRouter);
 
+// Global error handler
+app.use((err, req, res, next) => {
+    console.error(err);
+    const status = err.status || err.statusCode || 500;
+    res.status(status).json({ message: err.message || 'Internal server error' });
+});
+
 app.listen(6060, () => {
     console.log('App is listening on port 6060');
 });

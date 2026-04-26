@@ -2,29 +2,15 @@ export const permissions = [
     {
         role: 'user',
         actions: [
-            {
-    role: 'vendor',
-    actions: [
-        'get_profile',
-        'update_profile',
-        'add_products',
-        'view_product',
-        'view_products',
-        'update_product',
-        'delete_product',
-        'delete_products',
-        'manage_own_products',
-        'manage_waste_pickups',
-        'get_history',
-        'get_users_products',
-        'send_message_to_admin',
-        'get_users_stats',
-        'view_leaderboard',
-        'get_users_schedules',
-        'schedule_pickup',
-        'delete_schedule',
-    ]
-},
+            'get_profile',
+            'update_profile',
+            'get_history',
+            'get_users_schedules',
+            'get_schedule',
+            'update_pickup',
+            'delete_schedule',
+            'view_products',
+            'view_product',
         ]
     },
     {
@@ -46,8 +32,10 @@ export const permissions = [
             'get_users_stats',
             'view_leaderboard',
             'get_users_schedules',
+            'get_schedule',
             'schedule_pickup',
             'delete_schedule',
+            'update_pickup',
         ]
     },
     {
@@ -73,6 +61,8 @@ export const permissions = [
             'view_leaderboard',
             'get_users_schedules',
             'get_users_products',
+            'get_schedule',
+            'update_pickup',
             'assign_agent',
             'manage_agents',
             'view_platform_stats',

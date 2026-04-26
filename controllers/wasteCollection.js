@@ -16,14 +16,11 @@ export const schedulePickup = async (req, res, next) => {
 
 export const countSchedules = async (req, res, next) => {
     try {
-        const { filter = '{}' } = req.body;
-        //count adverts in database
+        const { filter = '{}' } = req.query;
         const count = await wasteCollectionModel.countDocuments(JSON.parse(filter));
-        //Respond to request
-        res.json({ count })
+        res.json({ count });
     } catch (error) {
         next(error);
-
     }
 }
 
