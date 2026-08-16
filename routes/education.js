@@ -1,15 +1,14 @@
-// import { Router } from 'express';
-// import { addArticle, getArticles, getArticleById, updateArticle, deleteArticle } from '../controllers/education.js';
-// import { verifyToken } from '../middlewares/auth.js';
-// import { requireRole } from '../middlewares/rbac.js';
+import { Router } from 'express';
+import { addArticle, getArticles, getArticleById, updateArticle, deleteArticle } from '../controllers/education.js';
+import { isAuthenticated, hasPermission } from '../middlewares/auth.js';
+import { educationImageUpload } from '../middlewares/uploads.js';
 
-// const router = Router();
+const educationRouter = Router();
 
-// router.post('/', verifyToken, requireRole(['admin']), addArticle);
-// router.get('/', getArticles);
-// router.get('/:id', getArticleById);
-// router.patch('/:id', verifyToken, requireRole(['admin']), updateArticle);
-// router.delete('/:id', verifyToken, requireRole(['admin']), deleteArticle);
+educationRouter.get('/', getArticles);
+educationRouter.get('/:id', getArticleById);
+educationRouter.post('/', isAuthenticated, hasPermission('manage_education'), educationImageUpload.single('image'), addArticle);
+educationRouter.patch('/:id', isAuthenticated, hasPermission('manage_education'), educationImageUpload.single('image'), updateArticle);
+educationRouter.delete('/:id', isAuthenticated, hasPermission('manage_education'), deleteArticle);
 
-// export default router; // Correct export
-
+export default educationRouter;

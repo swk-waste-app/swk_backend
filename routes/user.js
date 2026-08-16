@@ -14,7 +14,7 @@ const authLimiter = rateLimit({
     legacyHeaders: false,
 });
 
-userRouter.post('/admin', createAdmin);
+userRouter.post('/admin', authLimiter, createAdmin);
 userRouter.post('/register', authLimiter, registerUser);
 userRouter.post('/login', authLimiter, loginUser);
 userRouter.get('/profile', isAuthenticated, hasPermission('get_profile'), getProfile);

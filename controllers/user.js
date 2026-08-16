@@ -64,8 +64,10 @@ export const loginUser = async (req, res, next) => {
 
 export const getAllProfiles = async (req, res, next) => {
     try {
-        const { filter = "{}" } = req.query;
-        const users = await UserModel.find({ ...JSON.parse(filter) }).select('-password');
+        const { role } = req.query;
+        const filter = {};
+        if (role) filter.role = role;
+        const users = await UserModel.find(filter).select('-password');
         res.json(users);
     } catch (error) {
         next(error);
@@ -75,6 +77,7 @@ export const getAllProfiles = async (req, res, next) => {
 export const getProfile = async (req, res, next) => {
     try {
         const user = await UserModel.findById(req.auth.id).select({ password: false });
+        if (!user) return res.status(404).json({ message: 'User not found' });
         res.json(user);
     } catch (error) {
         next(error);
@@ -97,9 +100,9 @@ export const updateProfile = async (req, res, next) => {
 
 export const getUserProducts = async (req, res, next) => {
     try {
-        const { filter = '{}', sort = '{}', limit = 100, skip = 0 } = req.query;
+        const { sort = '{}', limit = 100, skip = 0 } = req.query;
         const products = await ProductModel
-            .find({ ...JSON.parse(filter), user: req.auth.id })
+            .find({ user: req.auth.id })
             .sort(JSON.parse(sort))
             .limit(limit)
             .skip(skip);
@@ -111,9 +114,9 @@ export const getUserProducts = async (req, res, next) => {
 
 export const getUserSchedules = async (req, res, next) => {
     try {
-        const { filter = '{}', sort = '{}', limit = 100, skip = 0 } = req.query;
+        const { sort = '{}', limit = 100, skip = 0 } = req.query;
         const schedules = await wasteCollectionModel
-            .find({ ...JSON.parse(filter), user: req.auth.id })
+            .find({ user: req.auth.id })
             .sort(JSON.parse(sort))
             .limit(limit)
             .skip(skip);

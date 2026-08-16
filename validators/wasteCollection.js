@@ -28,3 +28,16 @@ export const updatePickupValidator = Joi.object({
     rating: Joi.number().min(1).max(5),
     feedback: Joi.string().allow(''),
 });
+
+// Used when a non-admin edits their own schedule: excludes status and the
+// gamification fields (pointsEarned, carbonSaved, agentName, completedAt)
+// which only the admin-only status endpoint is allowed to set.
+export const userUpdatePickupValidator = Joi.object({
+    pickupDate: Joi.date(),
+    location: Joi.string(),
+    wasteType: Joi.string().valid(...WASTE_TYPES),
+    estimatedWeight: Joi.number(),
+    notes: Joi.string().allow(''),
+    rating: Joi.number().min(1).max(5),
+    feedback: Joi.string().allow(''),
+});

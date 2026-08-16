@@ -2,6 +2,8 @@ import passport from 'passport';
 import { Strategy as GoogleStrategy } from 'passport-google-oauth20';
 import { UserModel } from '../models/user.js';
 import jwt from 'jsonwebtoken';
+import bcrypt from 'bcryptjs';
+import crypto from 'crypto';
 
 const callbackURL = process.env.NODE_ENV === 'production'
     ? 'https://swk-backend.onrender.com/api/auth/google/callback'
@@ -21,7 +23,10 @@ passport.use(new GoogleStrategy({
             user = await UserModel.create({
                 name,
                 email,
-                password: 'google_' + profile.id,
+                // Google-authenticated users never log in with a password; store an
+                // unguessable, bcrypt-hashed value so the field can't be brute-forced
+                // or used as a predictable credential via the regular login endpoint.
+                password: bcrypt.hashSync(crypto.randomBytes(32).toString('hex'), 10),
                 role: 'user',
             });
         }

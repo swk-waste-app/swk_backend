@@ -4,7 +4,7 @@ import { fetchNewsArticles } from "../controllers/news.js";
 
 const newsRouter = Router();
 
-// Route to fetch news articles
-newsRouter.get('/news', fetchNewsArticles);
+// Mounted at /api/news in index.js, so this handles GET /api/news
+newsRouter.get('/', fetchNewsArticles);
 
 export default newsRouter;

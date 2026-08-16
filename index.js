@@ -12,6 +12,7 @@ import googleScholarRouter from './routes/googleScholar.js';
 import wasteCollectionRouter from './routes/wasteCollection.js';
 import messageRouter from './routes/message.js';
 import authRouter from './routes/auth.js';
+import educationRouter from './routes/education.js';
 
 // Connect to database
 await mongoose.connect(process.env.MONGO_URI)
@@ -40,6 +41,7 @@ app.use('/api/news', newsRouter);
 app.use('/api/scholar', googleScholarRouter);
 app.use('/api/messages', messageRouter);
 app.use('/api/auth', authRouter);
+app.use('/api/education', educationRouter);
 
 // Global error handler
 app.use((err, req, res, next) => {

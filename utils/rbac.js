@@ -66,6 +66,7 @@ export const permissions = [
             'assign_agent',
             'manage_agents',
             'view_platform_stats',
+            'manage_education',
         ]
     }
 ];

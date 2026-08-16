@@ -58,8 +58,11 @@ export const getProducts = async (req, res, next) => {
 
 export const countProducts = async (req, res, next) => {
     try {
-        const { filter = '{}' } = req.query;
-        const count = await ProductModel.countDocuments(JSON.parse(filter));
+        const { category, user } = req.query;
+        const filter = {};
+        if (category) filter.category = category;
+        if (user) filter.user = user;
+        const count = await ProductModel.countDocuments(filter);
         res.json({ count });
     } catch (error) {
         next(error);
@@ -78,6 +81,12 @@ export const getProduct = async (req, res, next) => {
 
 export const updateProduct = async (req, res, next) => {
     try {
+        const product = await ProductModel.findById(req.params.id);
+        if (!product) return res.status(404).json({ message: 'Product not found' });
+        if (req.auth.role !== 'admin' && product.user.toString() !== req.auth.id) {
+            return res.status(403).json({ message: 'Forbidden' });
+        }
+
         const { error, value } = updateProductValidator.validate({
             ...req.body,
             image: req.file?.filename
@@ -85,7 +94,7 @@ export const updateProduct = async (req, res, next) => {
         if (error) {
             return res.status(422).json(error);
         }
-        
+
         await ProductModel.findByIdAndUpdate(req.params.id, value);
         res.json('Product updated');
     } catch (error) {
@@ -96,9 +105,13 @@ export const updateProduct = async (req, res, next) => {
 
 export const deleteProduct = async (req, res, next) => {
     try {
-        const deletedProduct = await ProductModel.findByIdAndDelete(req.params.id);
-        if (!deletedProduct) return res.status(404).json({ message: 'Product not found' });
+        const product = await ProductModel.findById(req.params.id);
+        if (!product) return res.status(404).json({ message: 'Product not found' });
+        if (req.auth.role !== 'admin' && product.user.toString() !== req.auth.id) {
+            return res.status(403).json({ message: 'Forbidden' });
+        }
 
+        await ProductModel.findByIdAndDelete(req.params.id);
         res.json({ message: 'Product deleted successfully' });
     } catch (error) {
         next(error);

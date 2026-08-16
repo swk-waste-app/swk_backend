@@ -1,6 +1,6 @@
 import { wasteCollectionModel} from "../models/wasteCollection.js";
 import { UserModel } from "../models/user.js";
-import { schedulePickupValidator, updatePickupValidator } from "../validators/wasteCollection.js";
+import { schedulePickupValidator, updatePickupValidator, userUpdatePickupValidator } from "../validators/wasteCollection.js";
 
 const LEVELS = [
     { name: 'Beginner', min: 0 },
@@ -28,8 +28,7 @@ export const schedulePickup = async (req, res, next) => {
 
 export const countSchedules = async (req, res, next) => {
     try {
-        const { filter = '{}' } = req.query;
-        const count = await wasteCollectionModel.countDocuments(JSON.parse(filter));
+        const count = await wasteCollectionModel.countDocuments();
         res.json({ count });
     } catch (error) {
         next(error);
@@ -40,16 +39,22 @@ export const getSchedule = async (req, res, next) => {
     try {
         const { id } = req.params;
         const schedule = await wasteCollectionModel.findById(id);
+        if (!schedule) return res.status(404).json({ message: 'Schedule not found' });
+        if (req.auth.role !== 'admin' && schedule.user.toString() !== req.auth.id) {
+            return res.status(403).json({ message: 'Forbidden' });
+        }
         res.json(schedule);
     } catch (error) {
         next(error);
     }
 }
 
+// Admin-only: view every user's pickup history. Ownership is enforced by the
+// 'view_all_pickups' permission on the route, not here.
 export const getPickupHistory = async (req, res, next) => {
     try {
-        const {filter = "{}", sort = "{}", limit = 100, skip = 0} = req.query;
-        const pickups = await wasteCollectionModel.find(JSON.parse(filter))
+        const { sort = "{}", limit = 100, skip = 0 } = req.query;
+        const pickups = await wasteCollectionModel.find()
         .sort(JSON.parse(sort))
         .limit(limit)
         .skip(skip)
@@ -61,7 +66,19 @@ export const getPickupHistory = async (req, res, next) => {
 
 export const updatePickup = async (req, res, next) => {
     try {
-        const { error, value } = updatePickupValidator.validate(req.body);
+        const schedule = await wasteCollectionModel.findById(req.params.id);
+        if (!schedule) return res.status(404).json({ message: 'Schedule not found' });
+
+        const isOwner = schedule.user.toString() === req.auth.id;
+        const isAdmin = req.auth.role === 'admin';
+        if (!isOwner && !isAdmin) {
+            return res.status(403).json({ message: 'Forbidden' });
+        }
+
+        // Non-admins may only touch their own schedule details, never status
+        // or the gamification fields those endpoints exist to protect.
+        const validator = isAdmin ? updatePickupValidator : userUpdatePickupValidator;
+        const { error, value } = validator.validate(req.body);
         if (error) {
             return res.status(422).json(error);
         }
@@ -129,13 +146,16 @@ export const updatePickupStatus = async (req, res, next) => {
 
 export const deleteSchedule = async (req, res, next) => {
     try {
-        const deletedSchedule = await wasteCollectionModel.findByIdAndDelete(req.params.id);
-        if (!deletedSchedule) {
+        const schedule = await wasteCollectionModel.findById(req.params.id);
+        if (!schedule) {
             return res.status(404).json({ message: 'Schedule not found' });
         }
+        if (req.auth.role !== 'admin' && schedule.user.toString() !== req.auth.id) {
+            return res.status(403).json({ message: 'Forbidden' });
+        }
+        await wasteCollectionModel.findByIdAndDelete(req.params.id);
         res.json({ message: 'Schedule deleted successfully' });
     } catch (error) {
         next(error);
-    } 
+    }
 };
-

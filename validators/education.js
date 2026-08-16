@@ -1,8 +1,20 @@
-// import Joi from 'joi';
+import Joi from 'joi';
+import { EDUCATION_CATEGORIES } from '../models/education.js';
 
-// export const addArticleValidator = Joi.object({
-//     title: Joi.string().required(),
-//     contentType: Joi.string().valid('Blog', 'News', 'Article').required(),
-//     content: Joi.string().required(),
-//     tags: Joi.array().items(Joi.string()).optional(),
-// });
+export const addEducationValidator = Joi.object({
+    title: Joi.string().required(),
+    category: Joi.string().valid(...EDUCATION_CATEGORIES).default('General'),
+    summary: Joi.string().max(300).required(),
+    content: Joi.string().required(),
+    image: Joi.string().allow(''),
+    tags: Joi.array().items(Joi.string()),
+});
+
+export const updateEducationValidator = Joi.object({
+    title: Joi.string(),
+    category: Joi.string().valid(...EDUCATION_CATEGORIES),
+    summary: Joi.string().max(300),
+    content: Joi.string(),
+    image: Joi.string().allow(''),
+    tags: Joi.array().items(Joi.string()),
+});
