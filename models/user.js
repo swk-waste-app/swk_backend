@@ -5,6 +5,8 @@ const userSchema = new Schema({
     name: { type: String, required: true },
     email: { type: String, required: true, unique: true },
     password: { type: String, required: true },
+    // Google account id (OIDC `sub`) once the account has signed in with Google.
+    googleId: { type: String, unique: true, sparse: true },
     location: { type: String },
     role: { type: String, enum: ['user', 'vendor', 'admin'], default: 'user' },
     profileImage: { type: String },

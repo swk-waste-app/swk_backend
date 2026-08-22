@@ -1,9 +1,12 @@
+// Must stay the very first import: ES modules evaluate every import before any
+// code in this file runs, so a plain dotenv.config() call here would execute
+// AFTER utils/passport.js and middlewares/auth.js have already read process.env.
+import 'dotenv/config';
 import express from 'express'
 import mongoose from 'mongoose';
 import cors from 'cors'
-import dotenv from 'dotenv'
 import passport from './utils/passport.js';
-dotenv.config();
+import { allowedOrigins } from './utils/allowedOrigins.js';
 
 import productRouter from './routes/products.js';
 import userRouter from './routes/user.js';
@@ -22,11 +25,7 @@ await mongoose.connect(process.env.MONGO_URI)
 const app = express();
 app.use(express.json());
 app.use(cors({
-    origin: [
-        'http://localhost:5173',
-        'https://takakipawa.swkghana.org',
-        'https://swkfrontend.vercel.app'
-    ],
+    origin: allowedOrigins,
     credentials: true
 }));
 
@@ -50,6 +49,7 @@ app.use((err, req, res, next) => {
     res.status(status).json({ message: err.message || 'Internal server error' });
 });
 
-app.listen(6060, () => {
-    console.log('App is listening on port 6060');
+const port = process.env.PORT || 6060;
+app.listen(port, () => {
+    console.log('App is listening on port ' + port);
 });
