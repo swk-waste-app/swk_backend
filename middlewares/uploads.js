@@ -28,3 +28,10 @@ export const educationImageUpload = multer({
         params: { folder: 'swk-waste-app/education', allowed_formats: ['jpg', 'png', 'jpeg', 'webp'] }
     })
 });
+
+// AI waste-scanner photos are only forwarded to the model, never stored,
+// so they stay in memory instead of going to Cloudinary.
+export const aiImageUpload = multer({
+    storage: multer.memoryStorage(),
+    limits: { fileSize: 5 * 1024 * 1024 },
+});

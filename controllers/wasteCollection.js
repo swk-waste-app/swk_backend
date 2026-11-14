@@ -1,6 +1,10 @@
 import { wasteCollectionModel} from "../models/wasteCollection.js";
 import { UserModel } from "../models/user.js";
 import { schedulePickupValidator, updatePickupValidator, userUpdatePickupValidator } from "../validators/wasteCollection.js";
+import { notify } from "../utils/notify.js";
+
+const formatPickupDate = (date) =>
+    new Date(date).toLocaleDateString('en-GB', { weekday: 'short', day: 'numeric', month: 'short' });
 
 const LEVELS = [
     { name: 'Beginner', min: 0 },
@@ -19,7 +23,13 @@ export const schedulePickup = async (req, res, next) => {
         const { error, value } = schedulePickupValidator.validate(req.body);
         if (error) return res.status(422).json(error.details[0].message);
 
-        await wasteCollectionModel.create({ ...value, user: req.auth.id });
+        const schedule = await wasteCollectionModel.create({ ...value, user: req.auth.id });
+        notify(req.auth.id, {
+            type: 'pickup',
+            title: 'Pickup scheduled',
+            body: `${schedule.wasteType} pickup booked for ${formatPickupDate(schedule.pickupDate)}.`,
+            link: `/customerDashboard/schedule/${schedule.id}`,
+        });
         res.status(201).json({ message: 'Pickup scheduled successfully' });
     } catch (error) {
         next(error);
@@ -134,6 +144,28 @@ export const updatePickupStatus = async (req, res, next) => {
             await UserModel.findByIdAndUpdate(pickup.user, {
                 level: newLevel,
                 ...(newBadges.length > 0 ? { $push: { badges: { $each: newBadges } } } : {})
+            });
+
+            notify(pickup.user, {
+                type: 'points',
+                title: `You earned ${pointsEarned} points!`,
+                body: `Pickup completed: ${weightKg} kg collected, ${carbonSaved} kg CO2 saved. You are now a ${newLevel}.`,
+                link: '/customerDashboard/overview',
+            });
+            for (const badge of newBadges) {
+                notify(pickup.user, {
+                    type: 'badge',
+                    title: 'New badge unlocked',
+                    body: `You earned the "${badge.replace(/_/g, ' ')}" badge. Keep it up!`,
+                    link: '/customerDashboard/overview',
+                });
+            }
+        } else if (status && status !== pickup.status) {
+            notify(pickup.user, {
+                type: 'pickup',
+                title: `Pickup ${String(status).toLowerCase()}`,
+                body: `Your ${pickup.wasteType} pickup for ${formatPickupDate(pickup.pickupDate)} is now "${status}".`,
+                link: `/customerDashboard/schedule/${pickup.id}`,
             });
         }
 

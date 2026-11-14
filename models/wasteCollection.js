@@ -1,6 +1,6 @@
 import { Schema, model } from 'mongoose';
 
-const WASTE_TYPES = ['General Waste', 'Recyclable Materials', 'Organic/Food Waste',
+export const WASTE_TYPES = ['General Waste', 'Recyclable Materials', 'Organic/Food Waste',
     'Electronic (E-Waste)', 'Hazardous Waste', 'Fashion & Textiles',
     'Plastics', 'Metals & Scrap', 'Glass', 'Wood & Furniture',
     'Paper & Cardboard', 'Rubber', 'Other'];

@@ -16,6 +16,8 @@ import wasteCollectionRouter from './routes/wasteCollection.js';
 import messageRouter from './routes/message.js';
 import authRouter from './routes/auth.js';
 import educationRouter from './routes/education.js';
+import notificationRouter from './routes/notification.js';
+import aiRouter from './routes/ai.js';
 
 // Connect to database
 await mongoose.connect(process.env.MONGO_URI)
@@ -41,6 +43,8 @@ app.use('/api/scholar', googleScholarRouter);
 app.use('/api/messages', messageRouter);
 app.use('/api/auth', authRouter);
 app.use('/api/education', educationRouter);
+app.use('/api/notifications', notificationRouter);
+app.use('/api/ai', aiRouter);
 
 // Global error handler
 app.use((err, req, res, next) => {
