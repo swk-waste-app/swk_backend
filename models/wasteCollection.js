@@ -5,13 +5,15 @@ export const WASTE_TYPES = ['General Waste', 'Recyclable Materials', 'Organic/Fo
     'Plastics', 'Metals & Scrap', 'Glass', 'Wood & Furniture',
     'Paper & Cardboard', 'Rubber', 'Other'];
 
+export const PICKUP_STATUSES = ['Scheduled', 'In Progress', 'Completed', 'Cancelled'];
+
 const wasteCollectionSchema = new Schema({
     user: { type: Schema.Types.ObjectId, ref: 'User', required: true },
     pickupDate: { type: Date, required: true },
     location: { type: String, required: true },
     status: {
         type: String,
-        enum: ['Scheduled', 'In Progress', 'Completed', 'Cancelled'],
+        enum: PICKUP_STATUSES,
         default: 'Scheduled'
     },
     wasteType: {
@@ -31,5 +33,11 @@ const wasteCollectionSchema = new Schema({
 }, {
     timestamps: true,
 });
+
+// The operations queue lists pickups newest first and the summary counts
+// them by status and day; a household's own list filters by user.
+wasteCollectionSchema.index({ pickupDate: -1 });
+wasteCollectionSchema.index({ status: 1, pickupDate: 1 });
+wasteCollectionSchema.index({ user: 1, createdAt: -1 });
 
 export const wasteCollectionModel = model('WasteCollection', wasteCollectionSchema);

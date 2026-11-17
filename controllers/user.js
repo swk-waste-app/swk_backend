@@ -5,6 +5,8 @@ import { UserModel } from '../models/user.js';
 import { registerUserValidator, loginUserValidator, updateProfileValidator } from '../validators/user.js';
 import { ProductModel } from '../models/products.js';
 import { wasteCollectionModel } from '../models/wasteCollection.js';
+import { parseSort, parseCount } from '../utils/query.js';
+import { currentStreak } from '../utils/streak.js';
 
 export const createAdmin = async (req, res, next) => {
     try {
@@ -37,7 +39,7 @@ export const registerUser = async (req, res, next) => {
         if (existingUser) return res.status(409).json({ message: 'User already exists' });
         value.password = bcrypt.hashSync(value.password, 10);
         await UserModel.create(value);
-        res.status(201).json({ message: 'User registered successfully!' });
+        res.status(201).json({ message: 'User registered successfully' });
     } catch (error) {
         next(error);
     }
@@ -46,17 +48,16 @@ export const registerUser = async (req, res, next) => {
 export const loginUser = async (req, res, next) => {
     try {
         const { error, value } = loginUserValidator.validate(req.body);
-        if (error) return res.status(422).json(error);
+        if (error) return res.status(422).json({ message: error.details[0].message });
         const user = await UserModel.findOne({ email: value.email });
-        if (!user) return res.status(404).json('User does not exist!');
-        const correctPassword = bcrypt.compareSync(value.password, user.password);
-        if (!correctPassword) return res.status(401).json("Invalid Credentials");
+        const correctPassword = user ? bcrypt.compareSync(value.password, user.password) : false;
+        if (!correctPassword) return res.status(401).json({ message: 'That email and password do not match an account.' });
         const token = jwt.sign(
             { id: user.id, role: user.role },
             process.env.JWT_PRIVATE_KEY,
             { expiresIn: '24h' }
         );
-        res.json({ message: 'User logged in!', accessToken: token, role: user.role });
+        res.json({ message: 'User logged in', accessToken: token, role: user.role });
     } catch (error) {
         next(error);
     }
@@ -100,12 +101,12 @@ export const updateProfile = async (req, res, next) => {
 
 export const getUserProducts = async (req, res, next) => {
     try {
-        const { sort = '{}', limit = 100, skip = 0 } = req.query;
+        const { sort, limit, skip } = req.query;
         const products = await ProductModel
             .find({ user: req.auth.id })
-            .sort(JSON.parse(sort))
-            .limit(limit)
-            .skip(skip);
+            .sort(parseSort(sort))
+            .limit(parseCount(limit, 100))
+            .skip(parseCount(skip, 0));
         res.json(products);
     } catch (error) {
         next(error);
@@ -114,12 +115,12 @@ export const getUserProducts = async (req, res, next) => {
 
 export const getUserSchedules = async (req, res, next) => {
     try {
-        const { sort = '{}', limit = 100, skip = 0 } = req.query;
+        const { sort, limit, skip } = req.query;
         const schedules = await wasteCollectionModel
             .find({ user: req.auth.id })
-            .sort(JSON.parse(sort))
-            .limit(limit)
-            .skip(skip);
+            .sort(parseSort(sort))
+            .limit(parseCount(limit, 100))
+            .skip(parseCount(skip, 0));
         res.json(schedules);
     } catch (error) {
         next(error);
@@ -141,7 +142,10 @@ export const getUserStats = async (req, res, next) => {
             {
                 $group: {
                     _id: null,
-                    totalWaste: { $sum: '$actualWeight' },
+                    // Pickups completed before actual weights were recorded only have an estimate.
+                    totalWaste: {
+                        $sum: { $cond: [{ $gt: ['$actualWeight', 0] }, '$actualWeight', { $ifNull: ['$estimatedWeight', 0] }] }
+                    },
                     totalCarbon: { $sum: '$carbonSaved' },
                     totalPoints: { $sum: '$pointsEarned' }
                 }
@@ -159,9 +163,14 @@ export const getUserStats = async (req, res, next) => {
                     count: { $sum: 1 }
                 }
             },
-            { $sort: { '_id.year': 1, '_id.month': 1 } },
-            { $limit: 6 }
+            { $sort: { '_id.year': -1, '_id.month': -1 } },
+            { $limit: 6 },
+            { $sort: { '_id.year': 1, '_id.month': 1 } }
         ]);
+        const lastCompleted = await wasteCollectionModel
+            .findOne({ user: userObjectId, status: 'Completed' })
+            .sort({ completedAt: -1 })
+            .select('completedAt');
         let vendorStats = null;
         if (user.role === 'vendor') {
             const totalProducts = await ProductModel.countDocuments({ user: userObjectId });
@@ -196,7 +205,8 @@ export const getUserStats = async (req, res, next) => {
                 totalPoints: wasteStats[0]?.totalPoints || user.points || 0,
                 level: user.level,
                 badges: user.badges,
-                streak: user.streak,
+                // Lapses once a full week passes with no completed pickup.
+                streak: currentStreak(user.streak, lastCompleted?.completedAt),
             },
             recentPickups,
             monthlyPickups,

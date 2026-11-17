@@ -67,7 +67,7 @@ const redirectWithFailure = (res, frontend, reason, detail) => {
     return res.redirect(target.toString());
 };
 
-// Step 1 — kick off Google sign-in.
+// Step 1: start Google sign-in.
 //   GET /api/auth/google?role=user|vendor&origin=<frontend origin>
 authRouter.get('/google', (req, res, next) => {
     const nonce = crypto.randomBytes(16).toString('hex');
@@ -81,7 +81,7 @@ authRouter.get('/google', (req, res, next) => {
     })(req, res, next);
 });
 
-// Step 2 — Google sends the user back here with ?code=...&state=... (or ?error=...).
+// Step 2: Google sends the user back here with ?code=...&state=... (or ?error=...).
 authRouter.get('/google/callback', (req, res, next) => {
     try {
         const state = verifyOAuthState(req.query.state);

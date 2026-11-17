@@ -1,4 +1,4 @@
-# Google sign-in — how it is wired and what must match
+# Google sign-in: how it is wired and what must match
 
 ## Flow
 
@@ -43,8 +43,8 @@ On any failure the backend logs `[google-oauth] sign-in failed (<reason>)` and r
 | `GOOGLE_CLIENT_ID`     | from Google Cloud Console     | **same** client as local                                  |
 | `GOOGLE_CLIENT_SECRET` | from Google Cloud Console     | **same** secret (re-copy after any "reset secret")        |
 | `JWT_PRIVATE_KEY`      | any long random string        | set                                                       |
-| `FRONTEND_URL`         | `http://localhost:5173`       | `https://takakipawa.swkghana.org` (must be an absolute URL — the server refuses to start otherwise) |
-| `BACKEND_URL`          | optional (`http://localhost:6060`) | optional — `RENDER_EXTERNAL_URL` is used automatically; `NODE_ENV=production` also works |
+| `FRONTEND_URL`         | `http://localhost:5173`       | `https://takakipawa.swkghana.org` (must be an absolute URL, otherwise the server refuses to start) |
+| `BACKEND_URL`          | optional (`http://localhost:6060`) | optional: `RENDER_EXTERNAL_URL` is used automatically, and `NODE_ENV=production` also works |
 | `PORT`                 | optional (default `6060`)     | set by Render                                             |
 
 The server prints `[google-oauth] callback URL: …` at boot. That exact URL must be listed in Google Cloud Console.
@@ -66,7 +66,7 @@ The server prints `[google-oauth] callback URL: …` at boot. That exact URL mus
 Deploy the **frontend first** (its `GoogleCallback.jsx` accepts both `#fragment` and `?query`), then the
 backend (which now only sends the fragment). Both are backwards compatible with each other in that order.
 
-## Known limitation — account linking
+## Known limitation: account linking
 
 `POST /api/users/register` does not verify that the person owns the email address. Because Google
 sign-in links to an existing account with the same verified email, someone could pre-register another

@@ -1,5 +1,6 @@
 import Anthropic from '@anthropic-ai/sdk';
 import { WASTE_TYPES } from '../models/wasteCollection.js';
+import { brand } from '../utils/brand.js';
 
 // The AI features are optional: without ANTHROPIC_API_KEY the endpoints
 // report themselves as disabled and the frontend hides the features.
@@ -18,7 +19,7 @@ export const getAiStatus = (req, res) => {
 
 const DISABLED_MESSAGE = 'AI features are not configured on this server (ANTHROPIC_API_KEY is not set).';
 
-const CLASSIFY_PROMPT = `You are the waste-identification assistant for Taka Kipawa, a waste management and recycling service in Ghana.
+const CLASSIFY_PROMPT = `You are the waste-identification assistant for ${brand.name}, a waste management and recycling service in ${brand.country}.
 Look at the photo and identify the main waste item in it.
 
 Respond with ONLY a JSON object (no markdown fences, no commentary) with exactly these keys:
@@ -26,7 +27,7 @@ Respond with ONLY a JSON object (no markdown fences, no commentary) with exactly
 - "wasteType": the best match from this list: ${JSON.stringify(WASTE_TYPES)}
 - "recyclable": true or false
 - "confidence": "high", "medium" or "low"
-- "disposal": 1-2 sentences of practical disposal/recycling advice appropriate for Ghana
+- "disposal": 1-2 sentences of practical disposal/recycling advice appropriate for ${brand.country}
 - "upcyclingIdea": one creative reuse or upcycling idea for this item (or null if none makes sense)
 
 If the photo does not clearly show waste, use wasteType "Other", confidence "low", and explain in "disposal" what you can and cannot tell.`;
@@ -70,23 +71,23 @@ export const classifyWaste = async (req, res, next) => {
         try {
             result = parseModelJson(text);
         } catch {
-            return res.status(502).json({ message: 'The AI returned an unexpected answer. Please try another photo.' });
+            return res.status(502).json({ message: 'The photo could not be identified. Try another photo.' });
         }
         if (!WASTE_TYPES.includes(result.wasteType)) result.wasteType = 'Other';
         res.json(result);
     } catch (error) {
-        if (error?.status === 429) return res.status(429).json({ message: 'The AI is busy right now — try again in a minute.' });
+        if (error?.status === 429) return res.status(429).json({ message: 'The assistant is busy right now. Try again in a minute.' });
         if (error?.status) {
             console.error('[ai] classify failed:', error.status, error.message);
-            return res.status(502).json({ message: 'AI request failed. Please try again.' });
+            return res.status(502).json({ message: 'The photo could not be checked. Try again.' });
         }
         next(error);
     }
 };
 
-const CHAT_SYSTEM = `You are "Eco", the friendly assistant of Taka Kipawa (SWK Ghana), a waste management and upcycling marketplace in Ghana.
-Help users with: sorting and recycling waste, composting, reducing household waste, what Taka Kipawa offers (scheduling waste pickups from the dashboard, earning points for completed pickups — about 10 points per kg — levels and badges, and a marketplace of recycled/upcycled products), and general sustainability advice relevant to Ghana.
-Keep answers short (2-5 sentences), concrete and encouraging. If asked something unrelated to waste, recycling, sustainability or the Taka Kipawa app, politely steer back to those topics.`;
+const CHAT_SYSTEM = `You are "Eco", the assistant of ${brand.name} (operated by ${brand.operator}), a waste pickup service and upcycled goods marketplace in ${brand.country}.
+Help users with: sorting and recycling waste, composting, reducing household waste, what ${brand.name} offers (scheduling waste pickups from the dashboard, earning about 10 points per kg for completed pickups, levels and badges, and a marketplace of recycled and upcycled products), and general sustainability advice relevant to ${brand.country}.
+Keep answers short (2-5 sentences), concrete and practical. Do not use emoji. If asked something unrelated to waste, recycling, sustainability or the ${brand.name} app, politely steer back to those topics.`;
 
 export const chatWithAssistant = async (req, res, next) => {
     try {
@@ -115,10 +116,10 @@ export const chatWithAssistant = async (req, res, next) => {
         const reply = response.content?.find((block) => block.type === 'text')?.text?.trim() || '';
         res.json({ reply });
     } catch (error) {
-        if (error?.status === 429) return res.status(429).json({ message: 'The AI is busy right now — try again in a minute.' });
+        if (error?.status === 429) return res.status(429).json({ message: 'The assistant is busy right now. Try again in a minute.' });
         if (error?.status) {
             console.error('[ai] chat failed:', error.status, error.message);
-            return res.status(502).json({ message: 'AI request failed. Please try again.' });
+            return res.status(502).json({ message: 'The assistant could not answer. Try again.' });
         }
         next(error);
     }

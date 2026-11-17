@@ -17,9 +17,11 @@ export const hasPermission = (action) => {
         try {
 
             const user = await UserModel.findById(req.auth.id);
+            // A valid token for an account that no longer exists.
+            if (!user) return res.status(401).json('Account not found');
             const permission = permissions.find(value => value.role === user.role);
             if (!permission) {
-                return res.status(403).json('No permission found!');
+                return res.status(403).json('No permission found');
             }
             if (permission.actions.includes(action)) {
                 next();

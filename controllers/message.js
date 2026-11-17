@@ -22,7 +22,7 @@ export const sendMessageToAdmin = async (req, res, next) => {
         const adminEmail = process.env.MAIL_USER; // Store admin email in .env
         await sendEmail(adminEmail, subject, `${message}\n\nFrom: ${email}`);
 
-        res.status(201).json({ message: 'Message sent successfully to the admin!' });
+        res.status(201).json({ message: 'Message sent to the operations team' });
     } catch (error) {
         next(error);
     }

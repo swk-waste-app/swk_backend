@@ -7,7 +7,8 @@ export const addEducationValidator = Joi.object({
     summary: Joi.string().max(300).required(),
     content: Joi.string().required(),
     image: Joi.string().allow(''),
-    tags: Joi.array().items(Joi.string()),
+    // A multipart form sends one tag as a plain string and several as a list.
+    tags: Joi.array().items(Joi.string().trim().max(40)).single(),
 });
 
 export const updateEducationValidator = Joi.object({
@@ -16,5 +17,5 @@ export const updateEducationValidator = Joi.object({
     summary: Joi.string().max(300),
     content: Joi.string(),
     image: Joi.string().allow(''),
-    tags: Joi.array().items(Joi.string()),
+    tags: Joi.array().items(Joi.string().trim().max(40)).single(),
 });

@@ -7,7 +7,7 @@ import { UserModel } from '../models/user.js';
 import { frontendBaseUrl } from './allowedOrigins.js';
 
 // ---------------------------------------------------------------------------
-// Configuration checks — fail loudly at startup with an actionable message
+// Configuration checks: fail loudly at startup with an actionable message
 // instead of the cryptic "OAuth2Strategy requires a clientID option".
 // ---------------------------------------------------------------------------
 const missing = ['GOOGLE_CLIENT_ID', 'GOOGLE_CLIENT_SECRET', 'JWT_PRIVATE_KEY'].filter((key) => !process.env[key]);

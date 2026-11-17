@@ -1,7 +1,7 @@
 import { NotificationModel } from '../models/notification.js';
 
-// Latest notifications for the signed-in user, plus how many are unread —
-// one call drives both the bell badge and the dropdown list.
+// Latest notifications for the signed-in user, plus how many are unread.
+// One call drives both the bell badge and the dropdown list.
 export const getMyNotifications = async (req, res, next) => {
     try {
         const [notifications, unreadCount] = await Promise.all([

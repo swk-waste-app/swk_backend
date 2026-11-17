@@ -24,12 +24,12 @@ if (adminExists) {
     console.log('Admin already exists');
 } else {
     await UserModel.create({
-        name: 'SWK Admin',
+        name: 'Operations Admin',
         email,
         password: bcrypt.hashSync(password, 10),
         role: 'admin'
     });
-    console.log('Admin created successfully!');
+    console.log('Admin created successfully');
 }
 
 await mongoose.disconnect();

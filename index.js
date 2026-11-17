@@ -48,8 +48,9 @@ app.use('/api/ai', aiRouter);
 
 // Global error handler
 app.use((err, req, res, next) => {
-    console.error(err);
     const status = err.status || err.statusCode || 500;
+    // Client mistakes (4xx) are answered, not logged as server faults.
+    if (status >= 500) console.error(err);
     res.status(status).json({ message: err.message || 'Internal server error' });
 });
 

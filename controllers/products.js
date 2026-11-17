@@ -1,5 +1,7 @@
+import { isValidObjectId } from 'mongoose';
 import { ProductModel } from '../models/products.js';
 import { addProductValidator, updateProductValidator } from '../validators/products.js';
+import { parseSort, parseCount } from '../utils/query.js';
 
 export const addProduct = async (req, res, next) => {
     try {
@@ -25,7 +27,7 @@ export const addProduct = async (req, res, next) => {
 
 export const getProducts = async (req, res, next) => {
     try {
-        const { title, category, minPrice, maxPrice, user, limit = 100, skip = 0, sort = "{}" } = req.query;
+        const { title, category, minPrice, maxPrice, user, limit, skip, sort } = req.query;
         let filter = {};
 
         if (title) {
@@ -46,9 +48,9 @@ export const getProducts = async (req, res, next) => {
         const products = await ProductModel
             .find(filter)
             .populate('user', 'name')
-            .sort(JSON.parse(sort))
-            .limit(Number(limit))
-            .skip(Number(skip));
+            .sort(parseSort(sort))
+            .limit(parseCount(limit, 100))
+            .skip(parseCount(skip, 0));
 
         res.status(200).json(products);
     } catch (error) {
@@ -72,7 +74,14 @@ export const countProducts = async (req, res, next) => {
 export const getProduct = async (req, res, next) => {
     try {
         const { id } = req.params;
-        const product = await ProductModel.findById(id).populate('user', 'name location');
+        const product = isValidObjectId(id)
+            ? await ProductModel.findById(id).populate('user', 'name location')
+            : null;
+        if (!product) return res.status(404).json({ message: 'Product not found' });
+        // Count the view, unless the vendor is looking at their own listing.
+        if (product.user?.id !== req.auth?.id) {
+            ProductModel.updateOne({ _id: product._id }, { $inc: { views: 1 } }).catch(() => {});
+        }
         res.status(200).json(product);
     } catch (error) {
         next(error);
