@@ -46,8 +46,10 @@ await mongoose.connection.dropDatabase();
 const password = bcrypt.hashSync(DEMO_PASSWORD, 10);
 
 // ---------------------------------------------------------------- people
+// Placeholder phone numbers (0200 000 1xx), clearly not real subscribers.
+let phoneSeq = 100;
 const household = (name, email, location, kg, completed, streak, badges) => ({
-    name, email, password, location, role: 'user',
+    name, email, password, location, role: 'user', contactNumber: `0200000${phoneSeq++}`,
     points: kg * 10, wasteCollected: kg, carbonSaved: +(kg * 0.21).toFixed(2),
     completedPickups: completed, totalPickups: completed, streak,
     level: levelFor(kg * 10), badges,
